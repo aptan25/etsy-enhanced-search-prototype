@@ -20,5 +20,5 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   // Everything except Next's own build assets. Listing photos in /public are gated too.
-  matcher: ["/((?!_next/static|_next/image).*)"],
+  matcher: ["/((?!_next/static).*)"],
 };

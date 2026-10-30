@@ -12,15 +12,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-etsy: #f1641e;
+  --color-etsy-dark: #d9531a;
+  --color-cream: #fdebd2;
 }
 
+/* Light only: the prototype mirrors Etsy, which has no dark mode on web. */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }

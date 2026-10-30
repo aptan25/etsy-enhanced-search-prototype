@@ -1,0 +1,48 @@
+import Form from "next/form";
+import Link from "next/link";
+
+const navLinks = ["Gifts", "Top 100 Gifts", "Home Favorites", "Fashion Finds", "Wedding Guide", "Registry"];
+
+export function Header({ query = "" }: { query?: string }) {
+  return (
+    <header className="border-b border-neutral-200 bg-white">
+      <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-4 py-3 sm:gap-6 sm:px-8">
+        <Link href="/" className="font-serif text-3xl leading-none text-etsy" aria-label="Home">
+          Etsy
+        </Link>
+        <span className="hidden text-sm text-neutral-700 md:inline">☰ Categories</span>
+
+        <Form action="/search" className="flex min-w-0 flex-1">
+          <input
+            name="q"
+            defaultValue={query}
+            placeholder="Search for anything"
+            aria-label="Search"
+            className="min-w-0 flex-1 rounded-l-full border-2 border-neutral-900 px-4 py-2 text-sm outline-none focus:border-etsy"
+          />
+          <button
+            type="submit"
+            aria-label="Search"
+            className="rounded-r-full border-2 border-l-0 border-neutral-900 bg-etsy px-4 text-white hover:bg-etsy-dark"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden>
+              <path d="M10 2a8 8 0 0 1 6.32 12.9l5.39 5.4-1.41 1.4-5.4-5.39A8 8 0 1 1 10 2Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z" />
+            </svg>
+          </button>
+        </Form>
+
+        <nav className="hidden items-center gap-4 text-sm text-neutral-700 sm:flex" aria-label="Account">
+          <span>Sign in</span>
+          <span aria-label="Favorites">♡</span>
+          <span aria-label="Cart">🛒</span>
+        </nav>
+      </div>
+
+      <nav className="mx-auto hidden max-w-[1400px] justify-center gap-6 px-8 pb-3 text-sm text-neutral-700 md:flex">
+        {navLinks.map((l) => (
+          <span key={l}>{l}</span>
+        ))}
+      </nav>
+    </header>
+  );
+}
