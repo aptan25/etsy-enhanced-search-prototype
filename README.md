@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Etsy Enhanced Search prototype
 
-## Getting Started
+CBS Digital PM Lab × Etsy. A clickable copy of Etsy as it works today (the
+**current state**), which the team's Enhanced Search versions will be compared
+against.
 
-First, run the development server:
+**Live:** https://etsy-enhanced-search-prototype.vercel.app (password-protected;
+ask the team for it)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**Internal only.** The listings and photos are real Etsy data. Share the site
+only with the team and our Etsy sponsor.
+
+## Add or change a listing
+
+1. Save 2 photos as `public/listings/<etsy-listing-id>-1.jpg` and `-2.jpg`.
+2. Add an entry to `src/data/listings.ts`. Copy an existing one; fill every tag
+   group (occasion, recipient, interests, style).
+3. Run `pnpm test`. It fails on duplicate IDs, missing photos or empty tags.
+
+The listing then shows on the homepage, in search and on its own page.
+
+## Run locally
+
+```sh
+pnpm install
+echo "SITE_PASSWORD=pick-anything" > .env.local
+pnpm dev            # http://localhost:3000, any username + that password
+pnpm test           # unit tests
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+vercel --prod
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The production password is the `SITE_PASSWORD` env var on Vercel. If it is
+missing, the site returns 500 instead of opening up.
 
-## Learn More
+## How it fits together
 
-To learn more about Next.js, take a look at the following resources:
+| Path | What it is |
+|---|---|
+| `src/data/listings.ts` | Seed listings, the file the team edits |
+| `src/lib/listings.ts` | The only data access; becomes Supabase when edit mode is built |
+| `src/lib/search.ts` | Today's keyword search (all words must match; ranked by review count) |
+| `src/proxy.ts`, `src/lib/auth.ts` | Password gate on every route, photos included |
+| `src/app/` | Pages: `/`, `/search`, `/listing/[id]` |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Ranking by review count is our stand-in for Etsy's ranking, not its real
+algorithm. It reproduces what our research found: high-volume lookalikes rise
+to the top and distinctive makers sink.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built with Next.js 16 (App Router, Cache Components), Tailwind 4 and Vitest.
