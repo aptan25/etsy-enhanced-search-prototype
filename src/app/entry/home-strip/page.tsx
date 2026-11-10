@@ -1,0 +1,17 @@
+import { Header } from "@/components/Header";
+import { HomeSections } from "@/components/HomeSections";
+import { ConceptNote } from "@/components/mft/ConceptNote";
+import { OccasionStrip } from "@/components/mft/EntryPoints";
+
+export default function HomeStripPage() {
+  return (
+    <>
+      <Header />
+      <ConceptNote code="2b" title="Homepage strip" answers="how buyers reach their people: the next occasion on the homepage, which stays as it is." />
+      <main className="flex-1">
+        <OccasionStrip />
+        <HomeSections />
+      </main>
+    </>
+  );
+}
