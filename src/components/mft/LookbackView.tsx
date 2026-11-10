@@ -22,7 +22,9 @@ const outcomes: { id: Outcome; label: string }[] = [
 
 /** After the occasion: one tap of feedback updates the profile and sets up the next occasion. */
 export function LookbackView() {
-  const id = useSearchParams().get("id") ?? "";
+  const params = useSearchParams();
+  const id = params.get("id") ?? "";
+  const requested = Number(params.get("gift") ?? NaN);
   const people = usePeople();
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   const [picked, setPicked] = useState<string[]>([]);
@@ -30,8 +32,10 @@ export function LookbackView() {
   if (!people) return null;
 
   const person = people.find((p) => p.id === id);
-  // The most recent gift without feedback, or the one just rated on this visit.
-  const index = savedIndex ?? person?.history.findLastIndex((h) => !h.outcome) ?? -1;
+  // The gift just rated on this visit, else the one the link asked for (if it
+  // still needs feedback), else the most recent gift without feedback.
+  const pending = (i: number) => Number.isInteger(i) && person?.history[i] !== undefined && !person.history[i].outcome;
+  const index = savedIndex ?? (pending(requested) ? requested : (person?.history.findLastIndex((h) => !h.outcome) ?? -1));
   const gift = person && index >= 0 ? person.history[index] : undefined;
   const listing = gift && getListing(gift.listingId);
 

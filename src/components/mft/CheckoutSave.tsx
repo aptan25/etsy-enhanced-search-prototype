@@ -75,7 +75,7 @@ export function CheckoutSave() {
               <Link href={personHref(saved.id)} className="underline">
                 See {saved.name}&apos;s profile
               </Link>
-              <Link href={lookbackHref(saved.id)} className="underline">
+              <Link href={lookbackHref(saved.id, saved.history.length - 1)} className="underline">
                 Skip ahead: how did it go?
               </Link>
             </div>
