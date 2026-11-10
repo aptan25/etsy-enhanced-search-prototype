@@ -1,24 +1,18 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { clearPeople } from "@/lib/peopleStore";
 import { setTourStep } from "@/lib/tourStore";
 import { steps } from "./steps";
 
-/** Starts Sam's journey from no saved people. */
+/** Starts the guided demo straight away, from no saved people. */
 export function StartJourney() {
   const router = useRouter();
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        clearPeople();
-        setTourStep(0);
-        router.push(steps[0].href([]));
-      }}
-      className="rounded-full bg-neutral-900 px-6 py-3 font-semibold text-white hover:bg-neutral-700"
-    >
-      Start the demo →
-    </button>
-  );
+  useEffect(() => {
+    clearPeople();
+    setTourStep(0);
+    router.replace(steps[0].href([]));
+  }, [router]);
+  return <p>Starting the demo…</p>;
 }

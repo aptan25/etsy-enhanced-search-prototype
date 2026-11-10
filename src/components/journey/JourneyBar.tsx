@@ -47,32 +47,34 @@ export function JourneyBar() {
     router.push(steps[to].href(people));
   };
   const last = step === steps.length - 1;
-  const done = current.done?.(people) ?? false;
+  // Steps with an action lock Next until it's done, so later steps have Mom to show.
+  const locked = current.done ? !current.done(people) : false;
 
   return (
     <aside aria-label="Guided demo" className="sticky top-0 z-40 border-b-2 border-amber-400 bg-amber-50 text-neutral-900 shadow-sm">
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-start gap-x-4 gap-y-2 px-4 py-3 sm:flex-nowrap sm:px-8">
-        <span className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-serif text-lg sm:flex" aria-hidden>
+      <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-4 py-2.5 sm:px-8">
+        <span className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-300 font-serif text-lg sm:flex" aria-hidden>
           {persona.initial}
         </span>
         <div className="min-w-0 flex-1">
           <p className="flex flex-wrap items-center gap-x-2 text-xs text-amber-900">
             <span>
-              You&apos;re {persona.name}, shopping for Mom · step {step + 1} of {steps.length}
+              You&apos;re {persona.name}, {persona.goal} · {step + 1}/{steps.length}
             </span>
             {current.when && <span className="rounded bg-amber-300 px-1.5 font-semibold">⏩ {current.when}</span>}
           </p>
-          <p className="font-semibold">{current.title}</p>
-          <p className="text-sm text-neutral-700">{current.body}</p>
-          {pathname !== current.path && (
-            <Link href={current.href(people)} className="text-sm font-semibold underline">
-              Go to this step
-            </Link>
-          )}
+          <p className="text-sm">
+            <span className="font-semibold">{current.title}.</span> <span className="text-neutral-700">👉 {current.action}</span>
+            {pathname !== current.path && (
+              <Link href={current.href(people)} className="ml-2 font-semibold underline">
+                Go back to this step
+              </Link>
+            )}
+          </p>
         </div>
         <div className="flex shrink-0 items-center gap-3 text-sm">
           {step > 0 && (
-            <button type="button" onClick={() => go(step - 1)} className="underline">
+            <button type="button" onClick={() => go(step - 1)} className="hidden underline sm:inline">
               Back
             </button>
           )}
@@ -81,9 +83,9 @@ export function JourneyBar() {
               type="button"
               onClick={() => {
                 endTour();
-                router.push("/journey");
+                router.push("/concepts");
               }}
-              className="rounded-full bg-neutral-900 px-4 py-1.5 font-semibold text-white"
+              className="tour-pulse rounded-full bg-neutral-900 px-4 py-1.5 font-semibold text-white"
             >
               Finish
             </button>
@@ -91,7 +93,15 @@ export function JourneyBar() {
             <button
               type="button"
               onClick={() => go(step + 1)}
-              className={`rounded-full px-4 py-1.5 font-semibold ${done ? "tour-pulse bg-neutral-900 text-white" : "border border-neutral-400 bg-white"}`}
+              disabled={locked}
+              title={locked ? "Do the highlighted step first" : undefined}
+              className={`rounded-full px-4 py-1.5 font-semibold ${
+                locked
+                  ? "cursor-not-allowed border border-neutral-300 bg-white text-neutral-400"
+                  : current.done
+                    ? "tour-pulse bg-neutral-900 text-white"
+                    : "border border-neutral-400 bg-white"
+              }`}
             >
               Next →
             </button>
