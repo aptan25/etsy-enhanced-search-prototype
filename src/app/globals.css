@@ -23,3 +23,31 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/* Guided demo (/journey): hide concept labels and pulse the thing to click.
+   JourneyBar sets html[data-tour] to the current step's target name. */
+html[data-tour] .concept-note {
+  display: none;
+}
+
+@keyframes tour-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(245 158 11 / 0.8);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgb(245 158 11 / 0);
+  }
+}
+
+.tour-pulse,
+html[data-tour="save-past-order"] [data-tour-target="save-past-order"],
+html[data-tour="reminder"] [data-tour-target="reminder"],
+html[data-tour="add-like"] [data-tour-target="add-like"],
+html[data-tour="buy"] [data-tour-target="buy"],
+html[data-tour="place-order"] [data-tour-target="place-order"],
+html[data-tour="save-feedback"] [data-tour-target="save-feedback"] {
+  outline: 3px solid rgb(245 158 11);
+  outline-offset: 2px;
+  animation: tour-pulse 1.4s ease-in-out infinite;
+}

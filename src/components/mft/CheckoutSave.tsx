@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { formatPrice } from "@/components/ListingCard";
 import { getListing } from "@/lib/listings";
@@ -17,15 +18,26 @@ const ITEM_ID = "4349989364"; // personalized pickleball tote, $36.40
 const NEW = "__new__";
 const occasionChoices = ["Birthday", "Holiday gift exchange", "Christmas", "Just because"];
 
-/** 2c: at checkout, "Who is this for?" saves the person and records the gift. */
+/** The person's soonest occasion that checkout offers, e.g. "Christmas". */
+const nextOffered = (p: Person) => upcoming(p.occasions, new Date()).find((u) => occasionChoices.includes(u.occasion.label))?.occasion.label;
+
+/**
+ * 2c: at checkout, "Who is this for?" saves the person and records the gift.
+ * `?item=` picks the listing and `?for=` a saved person (when buying from their page).
+ */
 export function CheckoutSave() {
   const people = usePeople();
-  const item = getListing(ITEM_ID);
+  const params = useSearchParams();
+  const item = getListing(params.get("item") ?? ITEM_ID) ?? getListing(ITEM_ID);
+  const forPerson = people?.find((p) => p.id === params.get("for"));
   const [isGift, setIsGift] = useState(true);
-  const [who, setWho] = useState<string>(NEW);
+  const [whoPicked, setWho] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [rel, setRel] = useState<Relationship>("friend");
-  const [occasion, setOccasion] = useState(occasionChoices[0]);
+  const [occasionPicked, setOccasion] = useState<string | null>(null);
+  // Until the buyer picks, default to the person they came from and their next occasion.
+  const who = whoPicked ?? forPerson?.id ?? NEW;
+  const occasion = occasionPicked ?? (forPerson && nextOffered(forPerson)) ?? occasionChoices[0];
   const [date, setDate] = useState("");
   const [savedId, setSavedId] = useState<string | null>(null);
 
@@ -126,8 +138,8 @@ export function CheckoutSave() {
                         setWho(o.id);
                         // Default to this person's next occasion when it's one we offer.
                         const person = people.find((p) => p.id === o.id);
-                        const next = person && upcoming(person.occasions, new Date())[0];
-                        if (next && occasionChoices.includes(next.occasion.label)) setOccasion(next.occasion.label);
+                        const next = person && nextOffered(person);
+                        if (next) setOccasion(next);
                       }}
                       aria-pressed={who === o.id}
                       className={`rounded-full border px-3 py-1 text-sm ${who === o.id ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300"}`}
@@ -189,7 +201,7 @@ export function CheckoutSave() {
           <span>Total</span>
           <span>{formatPrice(item.price)}</span>
         </p>
-        <button type="button" onClick={placeOrder} className="mt-5 w-full rounded-full bg-neutral-900 py-3 font-semibold text-white hover:bg-neutral-700">
+        <button type="button" onClick={placeOrder} data-tour-target="place-order" className="mt-5 w-full rounded-full bg-neutral-900 py-3 font-semibold text-white hover:bg-neutral-700">
           Place order (demo)
         </button>
         <p className="mt-2 text-center text-xs text-neutral-500">Prototype only. No payment is taken.</p>

@@ -138,7 +138,7 @@ export function LookbackView() {
               </button>
             ))}
           </div>
-          <button type="button" onClick={save} className="mt-6 rounded-full bg-neutral-900 px-5 py-2 font-semibold text-white hover:bg-neutral-700">
+          <button type="button" onClick={save} data-tour-target="save-feedback" className="mt-6 rounded-full bg-neutral-900 px-5 py-2 font-semibold text-white hover:bg-neutral-700">
             Save feedback
           </button>
         </>

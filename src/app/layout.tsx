@@ -38,8 +38,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             All concepts
           </Link>
         </div>
-        {children}
         <JourneyBar />
+        {children}
       </body>
     </html>
   );

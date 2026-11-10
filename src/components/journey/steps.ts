@@ -1,99 +1,92 @@
 import { personHref } from "@/components/mft/PeopleStrip";
+import { lookbackHref } from "@/components/mft/PersonView";
 import type { Person } from "@/lib/people";
 
+/** Who the viewer plays in the guided demo. */
+export const persona = {
+  name: "Jess",
+  initial: "J",
+  about:
+    "You're Jess, 29, signed in to Etsy. In May you bought your mom a name necklace for Mother's Day. Christmas is coming and you haven't thought about her gift yet.",
+};
+
 /**
- * The guided demo: one buyer, Sam, from "bought here before, saved no one" to
- * two saved people with reminders and a rated gift. Each step names the page it
- * happens on; the bar moves on by itself when the viewer clicks the real link
- * into the next step's page, or when `autoNext` says the step's action is done.
+ * The guided demo: Jess shopping for Mom, from a past order to a rated gift.
+ * The panel moves on by itself when the viewer clicks the real link into the
+ * next step's page; otherwise they press Next. `target` makes the thing to
+ * click pulse (it matches a `data-tour-target` attribute; see globals.css).
  */
 export type Step = {
   path: string;
   title: string;
   body: string;
-  /** Time skip shown above the step, e.g. "3 weeks before Christmas". */
+  /** Time skip shown with the step, e.g. "6 weeks before Christmas". */
   when?: string;
+  target?: string;
   href: (people: Person[]) => string;
-  autoNext?: (people: Person[]) => boolean;
+  /** When true, the step's action is done and Next is highlighted. */
+  done?: (people: Person[]) => boolean;
 };
 
 const mom = (people: Person[]) => people.find((p) => p.relationship === "mom");
-const maya = (people: Person[]) => people.find((p) => p.relationship === "coworker");
-const profile = (p: Person | undefined) => (p ? personHref(p.id) : "/made-for-them");
+const momPage = (people: Person[]) => {
+  const m = mom(people);
+  return m ? personHref(m.id) : "/entry/home-strip";
+};
 
 export const steps: Step[] = [
   {
     path: "/entry/home-strip",
-    title: "Sam has bought here before",
-    body: "You're Sam: signed in, with past orders, and no saved people yet. Etsy sees that your May necklace order shipped to your mom before Mother's Day. Click “Save Mom”.",
+    title: "Etsy remembers your Mother's Day order",
+    body: "You haven't saved anyone on Etsy. But it sees the necklace you sent to your mom right before Mother's Day. Click “Save Mom”.",
+    target: "save-past-order",
     href: () => "/entry/home-strip",
-    autoNext: (people) => Boolean(mom(people)),
-  },
-  {
-    path: "/entry/home-strip",
-    title: "Mom is on your homepage",
-    body: "Saving a mom adds Mother's Day and Christmas, so her next occasion now sits at the top of the homepage. Click that strip.",
-    href: () => "/entry/home-strip",
-  },
-  {
-    path: "/made-for-them/person",
-    title: "Mom's page",
-    body: "Etsy remembers what the necklace says about her, her dates, and the gift itself. “Picks” match what she likes; “Something new” goes beyond it. Press Next.",
-    href: (people) => profile(mom(people)),
-  },
-  {
-    path: "/entry/search-pill",
-    title: "Someone you've never bought for",
-    body: "Your coworker Maya has a gift exchange coming up, and you've never bought her anything. Under the search bar, in “Shopping for someone?”, click “+ Someone new”.",
-    href: () => "/entry/search-pill",
-  },
-  {
-    path: "/made-for-them",
-    title: "Three ways to start from zero",
-    body: "A quiz, a relationship, or a chat: each works with no history. Click “Tell us in a chat”.",
-    href: () => "/made-for-them#add",
-  },
-  {
-    path: "/made-for-them/new/chat",
-    title: "Tell Etsy about Maya",
-    body: "Tap “My coworker Maya, gift exchange Dec 18”, then “Pickleball and coffee”. Etsy keeps her name, date and likes. Click “Save Maya”.",
-    href: () => "/made-for-them/new/chat",
-  },
-  {
-    path: "/made-for-them/person",
-    title: "Maya is saved",
-    body: "Her gift exchange date came from the chat. Her picks include a pickleball bag; press Next to buy it.",
-    href: (people) => profile(maya(people)),
-  },
-  {
-    path: "/entry/checkout",
-    title: "Buy the gift",
-    body: "Under “Who is it for?”, pick Maya (her occasion fills in), then “Place order”. The gift goes into her history.",
-    href: () => "/entry/checkout",
+    done: (people) => Boolean(mom(people)),
   },
   {
     path: "/entry/reminder",
-    when: "Weeks later",
-    title: "Etsy reminds you",
-    body: "Maya's exchange is covered, so the reminder is for Mom's Christmas, in the bell and by email. Click “See picks for Mom” (or “Shop for Mom” in the email).",
+    when: "6 weeks before Christmas",
+    title: "Etsy reminds you, so you don't have to",
+    body: "An email arrives with ideas for Mom, picked from what the necklace says about her. Click “Shop for Mom”.",
+    target: "reminder",
     href: () => "/entry/reminder",
   },
   {
     path: "/made-for-them/person",
-    title: "Back on Mom's page",
-    body: "Shop from her picks. Etsy also asks how past gifts went: under “Gift history”, click “How did it go?” next to the necklace.",
-    href: (people) => profile(mom(people)),
+    title: "Mom's page",
+    body: "Everything Etsy knows about her is here, and you can change it. She's been into coffee lately: open “+ Add something they like” and choose coffee.",
+    target: "add-like",
+    href: momPage,
+    done: (people) => mom(people)?.interests.includes("coffee") ?? false,
+  },
+  {
+    path: "/made-for-them/person",
+    title: "Pick her gift",
+    body: "The picks changed as soon as you added coffee. “Something new” shows ideas you never mentioned. Click “Buy for Mom” on a gift you like.",
+    target: "buy",
+    href: momPage,
+  },
+  {
+    path: "/entry/checkout",
+    title: "Checkout already knows who it's for",
+    body: "Mom and Christmas are filled in. Click “Place order” (nothing is charged), then Next.",
+    target: "place-order",
+    href: () => "/entry/checkout",
+    done: (people) => (mom(people)?.history.length ?? 0) > 1,
   },
   {
     path: "/made-for-them/lookback",
+    when: "After Christmas",
     title: "Was it a hit?",
-    body: "Choose “Loved it”, tap what she liked, then “Save feedback”. Mom's profile learns from it, and the next occasion is set up.",
-    href: (people) => (mom(people) ? `/made-for-them/lookback?id=${encodeURIComponent(mom(people)!.id)}` : "/made-for-them"),
+    body: "Etsy asks one question. Choose “Loved it”, tap what she liked, then “Save feedback”.",
+    target: "save-feedback",
+    href: (people) => (mom(people) ? lookbackHref(mom(people)!.id) : "/entry/home-strip"),
+    done: (people) => mom(people)?.history.some((h) => h.outcome) ?? false,
   },
   {
-    path: "/made-for-them",
-    title: "Where Sam ends up",
-    body: "Two saved people, one from a past order and one from a chat, each with dates, reminders and gift history. That's the whole journey.",
-    href: () => "/made-for-them",
+    path: "/made-for-them/person",
+    title: "Next time is easier",
+    body: "Mom's page now has both gifts and what she loved. Etsy will remind you before Mother's Day, with picks that already know her.",
+    href: momPage,
   },
 ];

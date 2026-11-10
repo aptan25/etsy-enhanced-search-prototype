@@ -113,7 +113,7 @@ export function ReminderBell() {
               </span>
             ))}
           </div>
-          <Link href={personHref(next.person.id)} className="mt-3 block rounded-full bg-neutral-900 py-2 text-center text-sm font-semibold text-white">
+          <Link href={personHref(next.person.id)} data-tour-target="reminder" className="mt-3 block rounded-full bg-neutral-900 py-2 text-center text-sm font-semibold text-white">
             See picks for {next.person.name}
           </Link>
         </div>
@@ -153,7 +153,7 @@ export function ReminderEmail() {
             </li>
           ))}
         </ul>
-        <Link href={personHref(next.person.id)} className="mt-5 inline-block rounded-full bg-neutral-900 px-5 py-2 text-sm font-semibold text-white">
+        <Link href={personHref(next.person.id)} data-tour-target="reminder" className="mt-5 inline-block rounded-full bg-neutral-900 px-5 py-2 text-sm font-semibold text-white">
           Shop for {next.person.name}
         </Link>
       </div>

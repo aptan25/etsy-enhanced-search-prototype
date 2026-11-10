@@ -58,6 +58,10 @@ export function PersonView() {
   const safe = safePicks(allListings, profile);
   const fresh = somethingNew(allListings, profile);
   const near = nearbyInterests(person.interests).slice(0, 3);
+  const buy = {
+    label: `Buy for ${person.name}`,
+    href: (l: { id: string }) => `/entry/checkout?item=${encodeURIComponent(l.id)}&for=${encodeURIComponent(person.id)}`,
+  };
 
   const removeLike = (tag: string) =>
     updatePerson(person.id, (p) => ({ ...p, interests: p.interests.filter((t) => t !== tag), style: p.style.filter((t) => t !== tag) }));
@@ -103,6 +107,7 @@ export function PersonView() {
             <span className="sr-only">Add something they like</span>
             <select
               value=""
+              data-tour-target="add-like"
               onChange={(e) => e.target.value && addLike(e.target.value)}
               className="rounded-lg border border-neutral-300 px-2 py-1"
             >
@@ -140,6 +145,7 @@ export function PersonView() {
           title={`Popular for a ${relationshipLabel(person.relationship).toLowerCase()}`}
           subtitle="Add a few likes and these get more personal."
           listings={popularFor(allListings, person.relationship, { occasionTag: next?.occasion.tag, budget: person.budget }, 5)}
+          buy={buy}
         />
       ) : (
         <>
@@ -148,6 +154,7 @@ export function PersonView() {
             subtitle={`Because they like ${person.interests.join(", ") || person.style.join(", ")}`}
             listings={safe}
             empty="No exact matches in our listings yet."
+            buy={{ ...buy, tourTarget: "buy" }}
           />
           <div className="mt-10">
             <New label="3a: beyond what you told us">
@@ -157,6 +164,7 @@ export function PersonView() {
                   subtitle={near.length ? `They might also like ${near.join(", ")}: things you didn't mention` : undefined}
                   listings={fresh}
                   empty="Nothing nearby yet."
+                  buy={buy}
                 />
               </div>
             </New>

@@ -83,7 +83,7 @@ export function PastOrderPrompt() {
               className="mt-1 block w-28 rounded-lg border border-neutral-300 px-2 py-1.5 text-sm"
             />
           </label>
-          <button type="button" onClick={save} className="rounded-full bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700">
+          <button type="button" onClick={save} data-tour-target="save-past-order" className="rounded-full bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700">
             Save {label}
           </button>
           <button type="button" onClick={() => setDismissed((x) => [...x, order.listingId])} className="px-2 py-2 text-sm underline">

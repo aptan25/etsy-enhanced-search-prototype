@@ -3,8 +3,9 @@
 CBS Digital PM Lab × Etsy. A clickable copy of Etsy as it works today (the
 **current state**), plus one page per **Made for Them** idea: save the people
 you buy gifts for, get reminded before their occasions, and say how the gift
-went. To see it end to end, start the **guided demo at `/journey`**: one buyer,
-Sam, in 12 steps, with a card at the bottom of each page saying what to click.
+went. To see it end to end, start the **guided demo at `/journey`**: you play
+Jess, shopping for Mom, in 7 steps. A yellow panel at the top of each page says
+what to do, and the thing to click pulses.
 To look at one idea, use **`/concepts`**, which groups the pages by the class
 feedback each one answers. Both are linked from the black banner on every page.
 
@@ -19,7 +20,7 @@ only with the team and our Etsy sponsor.
 - Saved people live in each viewer's browser (no accounts, no database). Every
   viewer starts with three demo people: Mom, Maya and Dad. Press **Reset demo
   people** on `/concepts` before presenting.
-- Starting the guided demo clears the saved people (Sam starts with none, plus
+- Starting the guided demo clears the saved people (Jess starts with none, plus
   one past order). Its steps live in `src/components/journey/steps.ts`.
 - Dashed yellow "New" outlines mark what differs from Etsy today.
 - The gift chat is scripted keyword matching, not an AI model. Try the
@@ -65,7 +66,7 @@ missing, the site returns 500 instead of opening up.
 | `src/lib/occasions.ts`, `src/lib/intent.ts` | Next-occasion math; chat parsing |
 | `src/lib/reminders.ts` | Which reminder to show: soonest occasion not already bought for |
 | `src/data/orders.ts` | The demo buyer's past orders (concept 1d) |
-| `src/components/journey/` | Guided demo: steps, bottom card, "Hi, Sam" |
+| `src/components/journey/` | Guided demo: persona, steps, top panel, "Hi, Jess" |
 | `src/components/mft/` | The Made for Them screens |
 | `src/proxy.ts`, `src/lib/auth.ts` | Password gate on every route, photos included |
 | `src/app/` | Pages: current state (`/`, `/search`, `/listing/[id]`, `/gifts`), concepts (`/concepts`, `/made-for-them/...`, `/entry/...`, `/seller/attributes`) |
