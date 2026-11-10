@@ -39,7 +39,7 @@ export function ShoppingForPill() {
         🎁 Shopping for someone?
       </button>
       {open && people && today && (
-        <div className="absolute left-0 z-10 mt-2 w-80 rounded-xl border border-neutral-200 bg-white p-2 shadow-lg">
+        <div className="absolute left-0 z-10 mt-2 w-80 max-w-[calc(100vw-7rem)] rounded-xl border border-neutral-200 bg-white p-2 shadow-lg">
           <p className="px-2 pb-1 text-xs text-neutral-500">Your people</p>
           <ul>
             {people.map((p) => (
