@@ -8,6 +8,7 @@ import { nearbyInterests, popularFor, safePicks, somethingNew } from "@/lib/matc
 import { formatDate, formatDays, upcoming } from "@/lib/occasions";
 import { relationshipLabel, type Person } from "@/lib/people";
 import { removePerson, updatePerson, usePeople } from "@/lib/peopleStore";
+import { New } from "./New";
 import { Avatar } from "./PeopleStrip";
 import { PickRow } from "./PickRow";
 
@@ -147,12 +148,18 @@ export function PersonView() {
             listings={safe}
             empty="No exact matches in our listings yet."
           />
-          <PickRow
-            title="Something new"
-            subtitle={near.length ? `They might also like ${near.join(", ")}: things you didn't mention` : undefined}
-            listings={fresh}
-            empty="Nothing nearby yet."
-          />
+          <div className="mt-10">
+            <New label="3a: beyond what you told us">
+              <div className="px-2 pb-2 [&>section]:mt-2">
+                <PickRow
+                  title="Something new"
+                  subtitle={near.length ? `They might also like ${near.join(", ")}: things you didn't mention` : undefined}
+                  listings={fresh}
+                  empty="Nothing nearby yet."
+                />
+              </div>
+            </New>
+          </div>
         </>
       )}
 

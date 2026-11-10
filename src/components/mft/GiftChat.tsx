@@ -11,6 +11,7 @@ import { formatDate, nextDate, type Occasion } from "@/lib/occasions";
 import { newPersonId, relationshipLabel, relationships, suggestedOccasions, type Relationship } from "@/lib/people";
 import { savePerson } from "@/lib/peopleStore";
 import type { Listing } from "@/lib/types";
+import { New } from "./New";
 import { personHref } from "./PeopleStrip";
 
 type Message = { from: "bot" | "user"; text: string; picks?: Listing[] };
@@ -119,7 +120,13 @@ export function GiftChat({ canSave }: { canSave: boolean }) {
         ))}
       </ol>
 
-      {chat.done && canSave && chat.who.relationship && <SaveCard chat={chat} relationship={chat.who.relationship} />}
+      {chat.done && canSave && chat.who.relationship && (
+        <div className="mt-8">
+          <New label="New: save them for next time">
+            <SaveCard chat={chat} relationship={chat.who.relationship} />
+          </New>
+        </div>
+      )}
 
       {!chat.done && (
         <>
@@ -199,7 +206,7 @@ function SaveCard({ chat, relationship }: { chat: Chat; relationship: Relationsh
   };
 
   return (
-    <div className="mt-6 rounded-2xl border-2 border-etsy bg-white p-5">
+    <div className="rounded-2xl border-2 border-etsy bg-white p-5">
       <h2 className="font-semibold">Save {name || "them"} for next time?</h2>
       <p className="text-sm text-neutral-600">We picked these up from your chat. You can change them any time.</p>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">

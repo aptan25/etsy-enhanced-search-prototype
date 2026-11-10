@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { ConceptNote } from "@/components/mft/ConceptNote";
 import { GiftAsk } from "@/components/mft/GiftAsk";
 import { PeopleStrip } from "@/components/mft/PeopleStrip";
+import { New } from "@/components/mft/New";
 
 const starts = [
   { href: "/made-for-them/new/quiz", title: "Take a quick taste quiz", body: "Pick between photos. Good when you don't know their hobbies yet." },
@@ -22,24 +23,32 @@ export default function MadeForThemPage() {
             <h1 className="font-serif text-3xl sm:text-4xl">Find the perfect gift</h1>
             <p className="mb-6 mt-2 text-neutral-700">Tell us who it&apos;s for and we&apos;ll find ideas.</p>
             <GiftAsk action="/made-for-them/new/chat" />
-            <h2 className="mb-3 mt-10 text-left text-lg font-semibold sm:text-center">Your people</h2>
-            <PeopleStrip />
+            <div className="mt-10">
+              <New label="New: your saved people">
+                <h2 className="mb-3 pt-2 text-left text-lg font-semibold sm:text-center">Your people</h2>
+                <PeopleStrip />
+              </New>
+            </div>
           </div>
         </section>
 
         <section id="add" className="mx-auto max-w-[1400px] scroll-mt-4 px-4 py-10 sm:px-8">
-          <h2 className="text-lg font-semibold">Shopping for someone new?</h2>
-          <p className="text-sm text-neutral-600">Three ways to start, even if you&apos;ve never bought them a gift.</p>
-          <ul className="mt-4 grid gap-4 sm:grid-cols-3">
-            {starts.map((s) => (
-              <li key={s.href}>
-                <Link href={s.href} className="block h-full rounded-xl border border-neutral-200 p-5 hover:border-neutral-900">
-                  <span className="font-semibold">{s.title} →</span>
-                  <span className="mt-1 block text-sm text-neutral-600">{s.body}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <New label="New: three ways to start">
+            <div className="p-2">
+              <h2 className="text-lg font-semibold">Shopping for someone new?</h2>
+              <p className="text-sm text-neutral-600">Three ways to start, even if you&apos;ve never bought them a gift.</p>
+              <ul className="mt-4 grid gap-4 sm:grid-cols-3">
+                {starts.map((s) => (
+                  <li key={s.href}>
+                    <Link href={s.href} className="block h-full rounded-xl border border-neutral-200 p-5 hover:border-neutral-900">
+                      <span className="font-semibold">{s.title} →</span>
+                      <span className="mt-1 block text-sm text-neutral-600">{s.body}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </New>
         </section>
       </main>
     </>

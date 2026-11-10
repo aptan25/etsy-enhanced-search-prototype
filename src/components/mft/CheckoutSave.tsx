@@ -7,6 +7,7 @@ import { formatPrice } from "@/components/ListingCard";
 import { getListing } from "@/lib/listings";
 import { newPersonId, relationshipLabel, relationships, suggestedOccasions, type Person, type Relationship } from "@/lib/people";
 import { savePerson, updatePerson, usePeople } from "@/lib/peopleStore";
+import { New } from "./New";
 import { personHref } from "./PeopleStrip";
 import { lookbackHref } from "./PersonView";
 
@@ -108,56 +109,60 @@ export function CheckoutSave() {
         </label>
 
         {isGift && people && (
-          <div className="mt-4 rounded-xl border-2 border-etsy p-4">
-            <p className="font-semibold">Who is it for?</p>
-            <p className="text-sm text-neutral-600">We&apos;ll remember this gift and remind you before their next occasion.</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {[...people.map((p) => ({ id: p.id, label: p.name })), { id: NEW, label: "+ Someone new" }].map((o) => (
-                <button
-                  key={o.id}
-                  type="button"
-                  onClick={() => setWho(o.id)}
-                  aria-pressed={who === o.id}
-                  className={`rounded-full border px-3 py-1 text-sm ${who === o.id ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300"}`}
-                >
-                  {o.label}
-                </button>
-              ))}
-            </div>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {who === NEW && (
-                <>
+          <div className="mt-6">
+            <New label="New: who is it for?">
+              <div className="rounded-xl border-2 border-etsy p-4">
+                <p className="font-semibold">Who is it for?</p>
+                <p className="text-sm text-neutral-600">We&apos;ll remember this gift and remind you before their next occasion.</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {[...people.map((p) => ({ id: p.id, label: p.name })), { id: NEW, label: "+ Someone new" }].map((o) => (
+                    <button
+                      key={o.id}
+                      type="button"
+                      onClick={() => setWho(o.id)}
+                      aria-pressed={who === o.id}
+                      className={`rounded-full border px-3 py-1 text-sm ${who === o.id ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300"}`}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {who === NEW && (
+                    <>
+                      <label className="text-sm">
+                        Name (optional)
+                        <input value={name} onChange={(e) => setName(e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2" />
+                      </label>
+                      <label className="text-sm">
+                        Relationship
+                        <select value={rel} onChange={(e) => setRel(e.target.value as Relationship)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2">
+                          {relationships.map((r) => (
+                            <option key={r.id} value={r.id}>
+                              {r.label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    </>
+                  )}
                   <label className="text-sm">
-                    Name (optional)
-                    <input value={name} onChange={(e) => setName(e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2" />
-                  </label>
-                  <label className="text-sm">
-                    Relationship
-                    <select value={rel} onChange={(e) => setRel(e.target.value as Relationship)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2">
-                      {relationships.map((r) => (
-                        <option key={r.id} value={r.id}>
-                          {r.label}
-                        </option>
+                    Occasion
+                    <select value={occasion} onChange={(e) => setOccasion(e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2">
+                      {occasionChoices.map((o) => (
+                        <option key={o}>{o}</option>
                       ))}
                     </select>
                   </label>
-                </>
-              )}
-              <label className="text-sm">
-                Occasion
-                <select value={occasion} onChange={(e) => setOccasion(e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2">
-                  {occasionChoices.map((o) => (
-                    <option key={o}>{o}</option>
-                  ))}
-                </select>
-              </label>
-              {who === NEW && (
-                <label className="text-sm">
-                  Date (optional)
-                  <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2" />
-                </label>
-              )}
-            </div>
+                  {who === NEW && (
+                    <label className="text-sm">
+                      Date (optional)
+                      <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2" />
+                    </label>
+                  )}
+                </div>
+              </div>
+            </New>
           </div>
         )}
       </section>
