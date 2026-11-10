@@ -7,7 +7,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { parseBudget, parseTaste, parseWho, type ParsedWho } from "@/lib/intent";
 import { getListings } from "@/lib/listings";
 import { popularFor, safePicks } from "@/lib/match";
-import { formatDate, type Occasion } from "@/lib/occasions";
+import { formatDate, nextDate, type Occasion } from "@/lib/occasions";
 import { newPersonId, relationshipLabel, relationships, suggestedOccasions, type Relationship } from "@/lib/people";
 import { savePerson } from "@/lib/peopleStore";
 import type { Listing } from "@/lib/types";
@@ -31,6 +31,8 @@ const whoReplies = ["My coworker Maya, gift exchange Dec 18", "My mom's birthday
 const tasteReplies = ["Pickleball and coffee", "Gardening and pottery, rustic stuff", "Funny things, under $40"];
 
 const dedupe = (xs: string[]) => [...new Set(xs)];
+
+const isoDay = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
 /** One turn of the scripted chat: merge what the buyer said, then ask for what's missing. */
 function reply(chat: Chat, text: string): Chat {
@@ -165,13 +167,18 @@ function SaveCard({ chat, relationship }: { chat: Chat; relationship: Relationsh
   const [name, setName] = useState(chat.who.name ?? "");
   const [rel, setRel] = useState<Relationship>(relationship);
   const heard = chat.who.occasion;
-  const [date, setDate] = useState(heard && "month" in heard ? `2026-${String(heard.month).padStart(2, "0")}-${String(heard.day).padStart(2, "0")}` : "");
+  // This card only renders after the buyer chats, so reading the clock here is browser-only.
+  const [today] = useState(() => new Date());
+  const heardDate = heard && "month" in heard ? isoDay(nextDate(heard, today)) : "";
+  const [date, setDate] = useState(heardDate);
   const [extras, setExtras] = useState<string[]>(suggestedOccasions[relationship].map((o) => o.label));
   const suggestions = suggestedOccasions[rel].filter((o) => o.label !== heard?.label);
 
   const save = () => {
     const occasions: Occasion[] = [];
-    if (heard && date) {
+    if (heard && "month" in heard && date === heardDate) {
+      occasions.push(heard); // unchanged: keeps a movable holiday's rule
+    } else if (heard && date) {
       const [, m, d] = date.split("-").map(Number);
       occasions.push({ label: heard.label, tag: heard.tag, month: m, day: d });
     }
@@ -237,7 +244,7 @@ function SaveCard({ chat, relationship }: { chat: Chat; relationship: Relationsh
                 checked={extras.includes(o.label)}
                 onChange={(e) => setExtras((x) => (e.target.checked ? [...x, o.label] : x.filter((l) => l !== o.label)))}
               />
-              {o.label} ({formatDate(o)})
+              {o.label} ({formatDate(o, today)})
             </label>
           ))}
         </fieldset>

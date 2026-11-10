@@ -38,11 +38,11 @@ export type Person = {
 /** Common holidays suggested by relationship, so one save covers the year. */
 export const suggestedOccasions: Record<Relationship, Occasion[]> = {
   mom: [
-    { label: "Mother's Day", month: 5, day: 10, tag: "mothers-day" },
+    { label: "Mother's Day", month: 5, day: 0, nth: 2, weekday: 0, tag: "mothers-day" },
     { label: "Christmas", month: 12, day: 25, tag: "holiday" },
   ],
   dad: [
-    { label: "Father's Day", month: 6, day: 21, tag: "fathers-day" },
+    { label: "Father's Day", month: 6, day: 0, nth: 3, weekday: 0, tag: "fathers-day" },
     { label: "Christmas", month: 12, day: 25, tag: "holiday" },
   ],
   partner: [
@@ -64,7 +64,7 @@ export const demoPeople: Person[] = [
     occasions: [
       { label: "Birthday", month: 11, day: 22, tag: "birthday" },
       { label: "Christmas", month: 12, day: 25, tag: "holiday" },
-      { label: "Mother's Day", month: 5, day: 10, tag: "mothers-day" },
+      { label: "Mother's Day", month: 5, day: 0, nth: 2, weekday: 0, tag: "mothers-day" },
     ],
     interests: ["coffee", "ceramics"],
     style: ["sentimental", "artisan"],
@@ -92,7 +92,7 @@ export const demoPeople: Person[] = [
     relationship: "dad",
     occasions: [
       { label: "Birthday", month: 4, day: 2, tag: "birthday" },
-      { label: "Father's Day", month: 6, day: 21, tag: "fathers-day" },
+      { label: "Father's Day", month: 6, day: 0, nth: 3, weekday: 0, tag: "fathers-day" },
     ],
     interests: ["fishing", "outdoors"],
     style: ["rustic"],

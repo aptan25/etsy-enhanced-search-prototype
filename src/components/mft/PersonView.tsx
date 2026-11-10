@@ -25,7 +25,9 @@ const sourceLabel: Record<Person["source"], string> = {
 
 const outcomeLabel = { loved: "Loved it", okay: "It was okay", missed: "Missed" };
 
-export const lookbackHref = (id: string) => `/made-for-them/lookback?id=${encodeURIComponent(id)}`;
+/** Look-back for one gift (`gift` = its index in history), or the newest unrated one. */
+export const lookbackHref = (id: string, gift?: number) =>
+  `/made-for-them/lookback?id=${encodeURIComponent(id)}${gift === undefined ? "" : `&gift=${gift}`}`;
 
 /** A saved person: what Etsy remembers (visible and editable), dates, and two rows of picks. */
 export function PersonView() {
@@ -120,7 +122,7 @@ export function PersonView() {
             {dates.map(({ occasion, days }) => (
               <li key={occasion.label} className="flex justify-between py-1.5">
                 <span>
-                  {occasion.label} <span className="text-neutral-500">· {formatDate(occasion)}</span>
+                  {occasion.label} <span className="text-neutral-500">· {formatDate(occasion, today)}</span>
                 </span>
                 <span className="text-neutral-600">{formatDays(days)}</span>
               </li>
@@ -175,7 +177,7 @@ export function PersonView() {
                   {h.outcome ? (
                     <span className="rounded-full bg-neutral-100 px-2 py-0.5">{outcomeLabel[h.outcome]}</span>
                   ) : (
-                    <Link href={lookbackHref(person.id)} className="font-semibold text-etsy-dark underline">
+                    <Link href={lookbackHref(person.id, i)} className="font-semibold text-etsy-dark underline">
                       How did it go?
                     </Link>
                   )}

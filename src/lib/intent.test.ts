@@ -19,6 +19,10 @@ describe("parseWho", () => {
       relationship: "dad",
       occasion: { label: "Christmas", tag: "holiday", month: 12, day: 25 },
     });
+    check("my dad for Father's Day", {
+      relationship: "dad",
+      occasion: { label: "Father's Day", tag: "fathers-day", month: 6, day: 0, nth: 3, weekday: 0 },
+    });
     check("my sister's birthday", { relationship: "sibling", occasion: { label: "Birthday", tag: "birthday" } });
   });
 

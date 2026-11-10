@@ -1,5 +1,9 @@
-/** A yearly date such as a birthday. `tag` links it to listing occasion tags. */
-export type Occasion = { label: string; month: number; day: number; tag?: string };
+/**
+ * A yearly date such as a birthday. `tag` links it to listing occasion tags.
+ * Holidays like Mother's Day move each year: `nth` + `weekday` (0 = Sunday)
+ * replace `day`, e.g. the 2nd Sunday of May.
+ */
+export type Occasion = { label: string; month: number; day: number; tag?: string; nth?: number; weekday?: number };
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -7,11 +11,19 @@ function startOfDay(d: Date) {
   return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
+/** The date of this occasion in a given year. */
+export function dateIn(o: Occasion, year: number): Date {
+  if (o.nth === undefined || o.weekday === undefined) return new Date(year, o.month - 1, o.day);
+  const first = new Date(year, o.month - 1, 1).getDay();
+  const offset = (o.weekday - first + 7) % 7;
+  return new Date(year, o.month - 1, 1 + offset + (o.nth - 1) * 7);
+}
+
 /** The next time this occasion happens, counting today as "next". */
 export function nextDate(o: Occasion, today: Date): Date {
   const t = startOfDay(today);
-  const thisYear = new Date(t.getFullYear(), o.month - 1, o.day);
-  return thisYear >= t ? thisYear : new Date(t.getFullYear() + 1, o.month - 1, o.day);
+  const thisYear = dateIn(o, t.getFullYear());
+  return thisYear >= t ? thisYear : dateIn(o, t.getFullYear() + 1);
 }
 
 export function daysUntil(o: Occasion, today: Date): number {
@@ -27,8 +39,10 @@ export function upcoming(occasions: Occasion[], today: Date) {
     .sort((a, b) => a.days - b.days);
 }
 
-export function formatDate(o: Pick<Occasion, "month" | "day">) {
-  return `${MONTHS[o.month - 1]} ${o.day}`;
+/** "Nov 22". Movable holidays show their next date. */
+export function formatDate(o: Occasion, today: Date) {
+  const d = nextDate(o, today);
+  return `${MONTHS[d.getMonth()]} ${d.getDate()}`;
 }
 
 export function formatDays(days: number) {

@@ -17,8 +17,8 @@ const relationshipWords: [RegExp, Relationship][] = [
 const occasionWords: [RegExp, Omit<Occasion, "month" | "day"> & { month?: number; day?: number }][] = [
   [/\b(gift exchange|secret santa|white elephant)\b/i, { label: "Holiday gift exchange", tag: "holiday" }],
   [/\bchristmas\b/i, { label: "Christmas", tag: "holiday", month: 12, day: 25 }],
-  [/\bmother'?s day\b/i, { label: "Mother's Day", tag: "mothers-day", month: 5, day: 10 }],
-  [/\bfather'?s day\b/i, { label: "Father's Day", tag: "fathers-day", month: 6, day: 21 }],
+  [/\bmother'?s day\b/i, { label: "Mother's Day", tag: "mothers-day", month: 5, day: 0, nth: 2, weekday: 0 }],
+  [/\bfather'?s day\b/i, { label: "Father's Day", tag: "fathers-day", month: 6, day: 0, nth: 3, weekday: 0 }],
   [/\bvalentine'?s?\b/i, { label: "Valentine's Day", tag: "valentines", month: 2, day: 14 }],
   [/\banniversary\b/i, { label: "Anniversary", tag: "anniversary" }],
   [/\bbaby shower\b/i, { label: "Baby shower" }],
@@ -110,9 +110,11 @@ export function parseWho(text: string): ParsedWho {
   const occ = occasionWords.find(([re]) => re.test(text));
   const date = parseDate(text);
   if (occ) {
-    const { month, day, ...rest } = occ[1];
-    const when = date ?? (month && day ? { month, day } : undefined);
-    out.occasion = when ? { ...rest, ...when } : rest;
+    const { label, tag, month } = occ[1];
+    // A date the buyer typed wins; otherwise fixed and movable holidays keep their own date.
+    if (date) out.occasion = { label, ...(tag && { tag }), ...date };
+    else if (month) out.occasion = occ[1] as Occasion;
+    else out.occasion = { label, ...(tag && { tag }) };
   } else if (date) {
     out.occasion = { label: "Special day", ...date };
   }
