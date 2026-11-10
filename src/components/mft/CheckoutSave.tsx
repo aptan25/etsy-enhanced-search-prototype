@@ -6,8 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { formatPrice } from "@/components/ListingCard";
 import { getListing } from "@/lib/listings";
-import { occasionPhrase, upcoming, type Occasion } from "@/lib/occasions";
-import { giftYear } from "@/lib/reminders";
+import { occasionPhrase, type Occasion } from "@/lib/occasions";
+import { giftYear, openOccasions } from "@/lib/reminders";
 import { newPersonId, relationshipLabel, relationships, suggestedOccasions, type Person, type Relationship } from "@/lib/people";
 import { savePerson, updatePerson, usePeople } from "@/lib/peopleStore";
 import { New } from "./New";
@@ -16,10 +16,10 @@ import { lookbackHref } from "./PersonView";
 
 const ITEM_ID = "4349989364"; // personalized pickleball tote, $36.40
 const NEW = "__new__";
-const occasionChoices = ["Birthday", "Holiday gift exchange", "Christmas", "Just because"];
+const occasionChoices = ["Birthday", "Holiday gift exchange", "Christmas", "Mother's Day", "Father's Day", "Just because"];
 
-/** The person's soonest occasion that checkout offers, e.g. "Christmas". */
-const nextOffered = (p: Person) => upcoming(p.occasions, new Date()).find((u) => occasionChoices.includes(u.occasion.label))?.occasion.label;
+/** The person's soonest occasion still needing a gift that checkout offers, e.g. "Christmas". */
+const nextOffered = (p: Person) => openOccasions(p, new Date()).find((u) => occasionChoices.includes(u.occasion.label))?.occasion.label;
 
 /**
  * 2c: at checkout, "Who is this for?" saves the person and records the gift.
