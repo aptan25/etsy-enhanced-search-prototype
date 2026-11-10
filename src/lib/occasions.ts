@@ -45,6 +45,11 @@ export function formatDate(o: Occasion, today: Date) {
   return `${MONTHS[d.getMonth()]} ${d.getDate()}`;
 }
 
+/** An occasion name mid-sentence: "Mom's birthday", but "Mom's Christmas" (holidays keep their capitals). */
+export function occasionPhrase(label: string) {
+  return /christmas|'s day$/i.test(label) ? label : label.toLowerCase();
+}
+
 export function formatDays(days: number) {
   if (days === 0) return "today";
   if (days === 1) return "tomorrow";

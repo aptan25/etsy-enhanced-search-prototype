@@ -5,19 +5,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { getListings } from "@/lib/listings";
 import { safePicks } from "@/lib/match";
-import { formatDays, upcoming } from "@/lib/occasions";
+import { formatDays, occasionPhrase } from "@/lib/occasions";
 import type { Person } from "@/lib/people";
 import { usePeople } from "@/lib/peopleStore";
+import { nextReminder } from "@/lib/reminders";
 import { Avatar, nextOccasionText, personHref } from "./PeopleStrip";
 
 const listings = getListings();
-
-/** The saved person with the soonest occasion, and that occasion. */
-function soonest(people: Person[], today: Date) {
-  return people
-    .flatMap((p) => upcoming(p.occasions, today).slice(0, 1).map((u) => ({ person: p, ...u })))
-    .sort((a, b) => a.days - b.days)[0];
-}
 
 const picksFor = (p: Person, tag?: string, n = 3) => safePicks(listings, { ...p, occasionTag: tag }, n);
 
@@ -67,7 +61,7 @@ export function ShoppingForPill() {
 export function OccasionStrip() {
   const people = usePeople();
   if (!people) return <div className="h-28" aria-hidden />;
-  const next = soonest(people, new Date());
+  const next = nextReminder(people, new Date());
   if (!next) return null;
   const picks = picksFor(next.person, next.occasion.tag);
 
@@ -77,7 +71,7 @@ export function OccasionStrip() {
         <Avatar name={next.person.name} />
         <span className="min-w-0 flex-1">
           <span className="block text-lg font-semibold">
-            {next.person.name}&apos;s {next.occasion.label.toLowerCase()} is {formatDays(next.days)}
+            {next.person.name}&apos;s {occasionPhrase(next.occasion.label)} is {formatDays(next.days)}
           </span>
           <span className="block text-sm text-neutral-600">{picks.length} picks based on what they like →</span>
         </span>
@@ -97,7 +91,7 @@ export function OccasionStrip() {
 export function ReminderBell() {
   const people = usePeople();
   const [open, setOpen] = useState(true);
-  const next = people && soonest(people, new Date());
+  const next = people && nextReminder(people, new Date());
 
   return (
     <span className="relative">
@@ -109,7 +103,7 @@ export function ReminderBell() {
         <div className="absolute right-0 z-10 mt-2 w-80 rounded-xl border border-neutral-200 bg-white p-4 text-left text-neutral-900 shadow-lg">
           <p className="text-xs text-neutral-500">Gift reminder</p>
           <p className="mt-1 font-semibold">
-            {next.person.name}&apos;s {next.occasion.label.toLowerCase()} is {formatDays(next.days)}
+            {next.person.name}&apos;s {occasionPhrase(next.occasion.label)} is {formatDays(next.days)}
           </p>
           <p className="text-sm text-neutral-600">Order soon so handmade items arrive on time.</p>
           <div className="mt-3 flex gap-2">
@@ -132,7 +126,7 @@ export function ReminderBell() {
 export function ReminderEmail() {
   const people = usePeople();
   if (!people) return null;
-  const next = soonest(people, new Date());
+  const next = nextReminder(people, new Date());
   if (!next) return <p className="text-sm text-neutral-600">Save someone with a date to see their reminder.</p>;
   const picks = picksFor(next.person, next.occasion.tag, 4);
 
@@ -140,14 +134,14 @@ export function ReminderEmail() {
     <div className="mx-auto max-w-xl overflow-hidden rounded-xl border border-neutral-200 shadow-sm">
       <div className="border-b border-neutral-200 bg-neutral-50 px-4 py-2 text-xs text-neutral-600">
         <p>
-          <strong>From:</strong> Etsy &nbsp; <strong>Subject:</strong> {next.person.name}&apos;s {next.occasion.label.toLowerCase()} is{" "}
+          <strong>From:</strong> Etsy &nbsp; <strong>Subject:</strong> {next.person.name}&apos;s {occasionPhrase(next.occasion.label)} is{" "}
           {formatDays(next.days)} 🎁
         </p>
       </div>
       <div className="p-6">
         <p className="font-serif text-2xl text-etsy">Etsy</p>
         <h2 className="mt-4 text-xl font-semibold">
-          {next.person.name}&apos;s {next.occasion.label.toLowerCase()} is {formatDays(next.days)}
+          {next.person.name}&apos;s {occasionPhrase(next.occasion.label)} is {formatDays(next.days)}
         </h2>
         <p className="mt-1 text-sm text-neutral-600">
           Picked for what {next.person.name} likes: {[...next.person.interests, ...next.person.style].join(", ")}.

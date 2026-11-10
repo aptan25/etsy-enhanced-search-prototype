@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { formatPrice } from "@/components/ListingCard";
 import { getListing } from "@/lib/listings";
+import { occasionPhrase, upcoming } from "@/lib/occasions";
 import { newPersonId, relationshipLabel, relationships, suggestedOccasions, type Person, type Relationship } from "@/lib/people";
 import { savePerson, updatePerson, usePeople } from "@/lib/peopleStore";
 import { New } from "./New";
@@ -69,7 +70,7 @@ export function CheckoutSave() {
         {saved ? (
           <>
             <p className="mt-2">
-              Saved to <strong>{saved.name}</strong>&apos;s profile. After the {occasion.toLowerCase()}, we&apos;ll ask how it went, then
+              Saved to <strong>{saved.name}</strong>&apos;s profile. After the {occasionPhrase(occasion)}, we&apos;ll ask how it went, then
               remind you before their next occasion.
             </p>
             <div className="mt-4 flex justify-center gap-4 text-sm">
@@ -119,7 +120,13 @@ export function CheckoutSave() {
                     <button
                       key={o.id}
                       type="button"
-                      onClick={() => setWho(o.id)}
+                      onClick={() => {
+                        setWho(o.id);
+                        // Default to this person's next occasion when it's one we offer.
+                        const person = people.find((p) => p.id === o.id);
+                        const next = person && upcoming(person.occasions, new Date())[0];
+                        if (next && occasionChoices.includes(next.occasion.label)) setOccasion(next.occasion.label);
+                      }}
                       aria-pressed={who === o.id}
                       className={`rounded-full border px-3 py-1 text-sm ${who === o.id ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300"}`}
                     >

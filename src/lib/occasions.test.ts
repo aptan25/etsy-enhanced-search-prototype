@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { daysUntil, formatDate, formatDays, nextDate, upcoming, type Occasion } from "./occasions";
+import { daysUntil, formatDate, formatDays, nextDate, occasionPhrase, upcoming, type Occasion } from "./occasions";
 
 const nov10 = new Date(2026, 10, 10, 15, 30); // afternoon, to check time of day is ignored
 const on = (month: number, day: number): Occasion => ({ label: "x", month, day });
@@ -42,6 +42,15 @@ describe("occasions", () => {
       "in 3 weeks",
       "in 6 weeks",
       "in 6 months",
+    ]);
+  });
+
+  it("keeps holiday capitals mid-sentence", () => {
+    expect(["Birthday", "Holiday gift exchange", "Christmas", "Mother's Day"].map(occasionPhrase)).toEqual([
+      "birthday",
+      "holiday gift exchange",
+      "Christmas",
+      "Mother's Day",
     ]);
   });
 });

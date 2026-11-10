@@ -9,6 +9,8 @@ export type Profile = {
   budget?: number;
   /** Listing occasion tag for the occasion being shopped for, e.g. "birthday". */
   occasionTag?: string;
+  /** Gifts already given; those listings are never suggested again. */
+  history?: { listingId: string }[];
 };
 
 // Listing recipient tags that fit each relationship.
@@ -58,7 +60,8 @@ function clashes(l: Listing, r: Relationship) {
   return other !== null && l.tags.recipient.every((t) => other.includes(t));
 }
 
-const eligible = (l: Listing, p: Profile) => withinBudget(l, p) && !clashes(l, p.relationship);
+const given = (l: Listing, p: Profile) => p.history?.some((h) => h.listingId === l.id) ?? false;
+const eligible = (l: Listing, p: Profile) => withinBudget(l, p) && !clashes(l, p.relationship) && !given(l, p);
 
 export function fitsRecipient(l: Listing, r: Relationship) {
   return overlap(l.tags.recipient, recipientTags[r]) > 0;

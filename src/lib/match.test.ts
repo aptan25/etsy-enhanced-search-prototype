@@ -63,4 +63,12 @@ describe("match", () => {
   it("an empty profile gets no safe picks (the page falls back to popular picks)", () => {
     expect(safePicks(listings, { relationship: "friend", interests: [], style: [] })).toEqual([]);
   });
+
+  it("never suggests a gift they were already given", () => {
+    // Mom saved from her necklace order: she likes jewelry and has that necklace.
+    const mom = { ...byId("mom"), interests: ["jewelry"], style: ["sentimental"] };
+    const given = mom.history[0].listingId;
+    expect(safePicks(listings, { ...mom, history: [] }).map((l) => l.id)).toContain(given);
+    expect(safePicks(listings, mom).map((l) => l.id)).not.toContain(given);
+  });
 });
