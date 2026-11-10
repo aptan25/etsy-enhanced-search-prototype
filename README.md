@@ -9,11 +9,10 @@ what to do, and the thing to click pulses.
 To look at one idea, use **`/concepts`**, which groups the pages by the class
 feedback each one answers. Both are linked from the black banner on every page.
 
-**Live:** https://etsy-enhanced-search-prototype.vercel.app (password-protected;
-ask the team for it)
+**Live:** https://etsy-enhanced-search-prototype.vercel.app (no password since
+2026-11-11; search engines are told not to index it)
 
-**Internal only.** The listings and photos are real Etsy data. Share the site
-only with the team and our Etsy sponsor.
+The listings and photos are real Etsy data. Share the link with care.
 
 ## Demo notes
 
@@ -40,19 +39,14 @@ The listing then shows on the homepage, in search and on its own page.
 
 ```sh
 pnpm install
-echo "SITE_PASSWORD=pick-anything" > .env.local
-pnpm dev            # http://localhost:3000, any username + that password
+pnpm dev            # http://localhost:3000
 pnpm test           # unit tests
 ```
 
 ## Deploy
 
-```sh
-vercel --prod
-```
-
-The production password is the `SITE_PASSWORD` env var on Vercel. If it is
-missing, the site returns 500 instead of opening up.
+Pushing to `main` deploys to production; other branches get a Vercel preview
+link.
 
 ## How it fits together
 
@@ -68,7 +62,6 @@ missing, the site returns 500 instead of opening up.
 | `src/data/orders.ts` | The demo buyer's past orders (concept 1d) |
 | `src/components/journey/` | Guided demo: persona, steps, top panel, "Hi, Jess" |
 | `src/components/mft/` | The Made for Them screens |
-| `src/proxy.ts`, `src/lib/auth.ts` | Password gate on every route, photos included |
 | `src/app/` | Pages: current state (`/`, `/search`, `/listing/[id]`, `/gifts`), concepts (`/concepts`, `/made-for-them/...`, `/entry/...`, `/seller/attributes`) |
 
 Ranking by review count is our stand-in for Etsy's ranking, not its real
