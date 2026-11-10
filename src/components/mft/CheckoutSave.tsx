@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { formatPrice } from "@/components/ListingCard";
 import { getListing } from "@/lib/listings";
-import { occasionPhrase, upcoming } from "@/lib/occasions";
+import { occasionPhrase, upcoming, type Occasion } from "@/lib/occasions";
+import { giftYear } from "@/lib/reminders";
 import { newPersonId, relationshipLabel, relationships, suggestedOccasions, type Person, type Relationship } from "@/lib/people";
 import { savePerson, updatePerson, usePeople } from "@/lib/peopleStore";
 import { New } from "./New";
@@ -35,14 +36,15 @@ export function CheckoutSave() {
       setSavedId("");
       return;
     }
-    const record = { listingId: item.id, occasion, year: new Date().getFullYear() };
+    const today = new Date();
+    const record = (occasions: Occasion[]) => ({ listingId: item.id, occasion, year: giftYear(occasions, occasion, today) });
     if (who !== NEW) {
-      updatePerson(who, (p) => ({ ...p, history: [...p.history, record] }));
+      updatePerson(who, (p) => ({ ...p, history: [...p.history, record(p.occasions)] }));
       setSavedId(who);
       return;
     }
     const label = name.trim() || relationshipLabel(rel);
-    const occasions = [...suggestedOccasions[rel]];
+    const occasions: Occasion[] = [...suggestedOccasions[rel]];
     if (date) {
       const [, m, d] = date.split("-").map(Number);
       occasions.unshift({ label: occasion, month: m, day: d, tag: occasion === "Birthday" ? "birthday" : "holiday" });
@@ -55,7 +57,7 @@ export function CheckoutSave() {
       // Start the profile from what they're buying.
       interests: item.tags.interests,
       style: item.tags.style,
-      history: [record],
+      history: [record(occasions)],
       source: "checkout",
     };
     savePerson(person);

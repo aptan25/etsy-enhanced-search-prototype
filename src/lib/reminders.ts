@@ -1,4 +1,4 @@
-import { nextDate, upcoming } from "./occasions";
+import { nextDate, upcoming, type Occasion } from "./occasions";
 import type { Person } from "./people";
 
 /**
@@ -19,4 +19,14 @@ export function nextReminder(people: Person[], today: Date) {
         .map((u) => ({ person, ...u })),
     )
     .sort((a, b) => a.days - b.days)[0];
+}
+
+/**
+ * The year a gift bought today counts toward: the next time the occasion
+ * happens (Dec 20 for a Dec 18 exchange counts toward next year's). Occasions
+ * the person doesn't have, like "Just because", count toward this year.
+ */
+export function giftYear(occasions: Occasion[], label: string, today: Date) {
+  const o = occasions.find((x) => x.label === label);
+  return (o ? nextDate(o, today) : today).getFullYear();
 }

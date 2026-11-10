@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Person } from "./people";
-import { nextReminder } from "./reminders";
+import { giftYear, nextReminder } from "./reminders";
 
 const nov10 = new Date(2026, 10, 10);
 const person = (name: string, occasions: Person["occasions"], history: Person["history"] = []): Person => ({
@@ -35,5 +35,17 @@ describe("nextReminder", () => {
 
   it("returns nothing when no one has a date", () => {
     expect(nextReminder([person("Jo", [])], nov10)).toBeUndefined();
+  });
+
+  it("counts a gift bought after this year's date toward next year, so it isn't reminded again", () => {
+    const dec20 = new Date(2026, 11, 20);
+    const year = giftYear(maya.occasions, "Holiday gift exchange", dec20);
+    expect(year).toBe(2027);
+    const bought = { ...maya, history: [{ listingId: "x", occasion: "Holiday gift exchange", year }] };
+    expect(nextReminder([bought], dec20)).toBeUndefined();
+  });
+
+  it("counts an occasion the person doesn't have toward this year", () => {
+    expect(giftYear(maya.occasions, "Just because", nov10)).toBe(2026);
   });
 });
