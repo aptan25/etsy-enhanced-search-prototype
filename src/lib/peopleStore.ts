@@ -76,6 +76,11 @@ export function removePerson(id: string) {
   write(JSON.stringify(getPeople().filter((p) => p.id !== id)));
 }
 
+/** No saved people: the guided demo starts from a buyer who hasn't saved anyone. */
+export function clearPeople() {
+  write("[]");
+}
+
 /** Back to the three demo people. */
 export function resetPeople() {
   write(null);

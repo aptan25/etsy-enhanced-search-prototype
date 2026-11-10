@@ -1,6 +1,7 @@
 import Form from "next/form";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Account } from "./journey/Account";
 
 const navLinks = ["Gifts", "Top 100 Gifts", "Home Favorites", "Fashion Finds", "Wedding Guide", "Registry"];
 
@@ -39,7 +40,7 @@ export function Header({ query = "", searchAddon, bell }: { query?: string; sear
         </div>
 
         <nav className="hidden items-center gap-4 text-sm text-neutral-700 sm:flex" aria-label="Account">
-          <span>Sign in</span>
+          <Account />
           {bell ?? <span aria-label="Favorites">♡</span>}
           <span aria-label="Cart">🛒</span>
         </nav>

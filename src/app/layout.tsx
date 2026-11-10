@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import { JourneyBar } from "@/components/journey/JourneyBar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,11 +30,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <div className="bg-neutral-900 py-1.5 text-center text-xs tracking-wide text-white">
           CBS PM Lab concept prototype, not an Etsy product. Internal only.{" "}
+          <Link href="/journey" className="underline">
+            Guided demo
+          </Link>{" "}
+          ·{" "}
           <Link href="/concepts" className="underline">
             All concepts
           </Link>
         </div>
         {children}
+        <JourneyBar />
       </body>
     </html>
   );
