@@ -18,6 +18,7 @@ const groups: { question: string; concepts: Concept[] }[] = [
       { code: "1a", title: "Taste quiz", href: "/made-for-them/new/quiz", body: "Four photo picks build a starting profile." },
       { code: "1b", title: "Start from who they are", href: "/made-for-them/new/relationship", body: "Relationship, occasion, budget; heart items to teach it." },
       { code: "1c", title: "Start from a chat", href: "/made-for-them/new/chat", body: "Describe them; Etsy keeps the name, dates and likes." },
+      { code: "1d", title: "Start from a past order", href: "/journey", body: "A gift-like past order offers to save who it was for. Shown in the guided demo." },
     ],
   },
   {
@@ -48,7 +49,10 @@ export default function ConceptsPage() {
       <p className="mt-2 max-w-2xl text-neutral-700">
         One page per idea, grouped by the class feedback it answers. Saved people are kept in this browser only; reset before each demo.
       </p>
-      <div className="mt-4">
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <Link href="/journey" className="rounded-full bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700">
+          Guided demo: one buyer, start to finish →
+        </Link>
         <ResetDemo />
       </div>
 

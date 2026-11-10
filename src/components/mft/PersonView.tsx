@@ -22,6 +22,7 @@ const sourceLabel: Record<Person["source"], string> = {
   relationship: "Saved from 'start from who they are'",
   chat: "Saved from the gift chat",
   checkout: "Saved at checkout",
+  orders: "Saved from a past order",
 };
 
 const outcomeLabel = { loved: "Loved it", okay: "It was okay", missed: "Missed" };

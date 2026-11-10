@@ -32,7 +32,7 @@ export type Person = {
   budget?: number;
   history: GiftRecord[];
   /** Which workflow created this person, shown on the profile for the demo. */
-  source: "demo" | "quiz" | "relationship" | "chat" | "checkout";
+  source: "demo" | "quiz" | "relationship" | "chat" | "checkout" | "orders";
 };
 
 /** Common holidays suggested by relationship, so one save covers the year. */
