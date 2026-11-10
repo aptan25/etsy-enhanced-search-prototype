@@ -125,3 +125,9 @@ export function parseTaste(text: string): { interests: string[]; style: string[]
   const style = new Set(styleWords.filter(([re]) => re.test(text)).map(([, s]) => s));
   return { interests: [...interests], style: [...style] };
 }
+
+/** "something under $40" → 40. */
+export function parseBudget(text: string): number | undefined {
+  const m = text.match(/\b(?:under|below|less than|max|up to)\s*\$?\s*(\d{1,5})\b/i);
+  return m ? Number(m[1]) : undefined;
+}

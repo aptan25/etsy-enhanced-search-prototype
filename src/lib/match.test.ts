@@ -35,6 +35,14 @@ describe("match", () => {
     expect(somethingNew(listings, byId("maya")).map((l) => l.id)).toContain("4310655951");
   });
 
+  it("never pitches a him/dad-only item for Mom, even when interests overlap", () => {
+    // 4591499376: rainbow trout tile, tagged ceramics but recipient him/dad.
+    const mom = byId("mom");
+    const all = [...safePicks(listings, mom, 100), ...somethingNew(listings, mom, 100)].map((l) => l.id);
+    expect(all).not.toContain("4591499376");
+    expect(safePicks(listings, byId("dad"), 100).map((l) => l.id)).toContain("4591499376");
+  });
+
   it("ranks style matches above plain interest matches", () => {
     const mom: Profile = byId("mom");
     // Both are coffee + ceramics mugs; the handwritten one is also sentimental + artisan.

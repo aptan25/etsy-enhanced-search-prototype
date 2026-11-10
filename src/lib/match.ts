@@ -49,6 +49,17 @@ const overlap = (a: string[], b: string[]) => a.filter((x) => b.includes(x)).len
 
 const withinBudget = (l: Listing, p: Profile) => p.budget === undefined || l.price <= p.budget;
 
+// A listing tagged only "him/dad" shouldn't be pitched for Mom (e.g. the trout
+// tile shares "ceramics" with her), and the reverse.
+const forHer = ["her", "mom"];
+const forHim = ["him", "dad"];
+function clashes(l: Listing, r: Relationship) {
+  const other = r === "mom" ? forHim : r === "dad" ? forHer : null;
+  return other !== null && l.tags.recipient.every((t) => other.includes(t));
+}
+
+const eligible = (l: Listing, p: Profile) => withinBudget(l, p) && !clashes(l, p.relationship);
+
 export function fitsRecipient(l: Listing, r: Relationship) {
   return overlap(l.tags.recipient, recipientTags[r]) > 0;
 }
@@ -68,7 +79,7 @@ const byScore = (p: Profile) => (a: Listing, b: Listing) => score(b, p) - score(
 /** Picks that match at least one interest the buyer named. */
 export function safePicks(listings: Listing[], p: Profile, n = 5): Listing[] {
   return listings
-    .filter((l) => withinBudget(l, p) && overlap(l.tags.interests, p.interests) > 0)
+    .filter((l) => eligible(l, p) && overlap(l.tags.interests, p.interests) > 0)
     .sort(byScore(p))
     .slice(0, n);
 }
@@ -86,7 +97,7 @@ export function somethingNew(listings: Listing[], p: Profile, n = 5): Listing[] 
   return listings
     .filter(
       (l) =>
-        withinBudget(l, p) &&
+        eligible(l, p) &&
         overlap(l.tags.interests, p.interests) === 0 &&
         overlap(l.tags.interests, near) > 0,
     )

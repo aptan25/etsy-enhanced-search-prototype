@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseTaste, parseWho, type ParsedWho } from "./intent";
+import { parseBudget, parseTaste, parseWho, type ParsedWho } from "./intent";
 
 function check(text: string, expected: ParsedWho) {
   expect(parseWho(text), text).toEqual(expected);
@@ -52,5 +52,13 @@ describe("parseTaste", () => {
       style: ["rustic"],
     });
     expect(parseTaste("no idea")).toEqual({ interests: [], style: [] });
+  });
+});
+
+describe("parseBudget", () => {
+  it("reads a spending cap", () => {
+    expect(parseBudget("Something funny for a coworker under $40")).toBe(40);
+    expect(parseBudget("up to 100")).toBe(100);
+    expect(parseBudget("a $40 gift")).toBeUndefined();
   });
 });
