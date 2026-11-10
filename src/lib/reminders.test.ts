@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Person } from "./people";
-import { giftYear, nextReminder } from "./reminders";
+import { giftYear, nextReminder, openOccasions } from "./reminders";
 
 const nov10 = new Date(2026, 10, 10);
 const person = (name: string, occasions: Person["occasions"], history: Person["history"] = []): Person => ({
@@ -47,5 +47,12 @@ describe("nextReminder", () => {
 
   it("counts an occasion the person doesn't have toward this year", () => {
     expect(giftYear(maya.occasions, "Just because", nov10)).toBe(2026);
+  });
+
+  it("lists only occasions still needing a gift, so 'next up' moves past one already bought for", () => {
+    const both = person("Mom", [...mom.occasions, { label: "Mother's Day", month: 5, day: 9 }], [
+      { listingId: "x", occasion: "Christmas", year: 2026 },
+    ]);
+    expect(openOccasions(both, nov10).map((u) => u.occasion.label)).toEqual(["Mother's Day"]);
   });
 });

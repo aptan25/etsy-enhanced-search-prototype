@@ -86,7 +86,7 @@ export const steps: Step[] = [
   {
     path: "/made-for-them/person",
     title: "Next time is easier",
-    body: "Mom's page now has both gifts and what she loved. Etsy will remind you before Mother's Day, with picks that already know her.",
+    body: "Christmas shows “Gift bought”, her history has both gifts and what she loved, and her next occasion is up next, with picks that already know her.",
     href: momPage,
   },
 ];

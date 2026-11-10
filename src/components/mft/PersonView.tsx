@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getListing, getListings } from "@/lib/listings";
 import { nearbyInterests, popularFor, safePicks, somethingNew } from "@/lib/match";
 import { formatDate, formatDays, upcoming } from "@/lib/occasions";
+import { covered, openOccasions } from "@/lib/reminders";
 import { relationshipLabel, type Person } from "@/lib/people";
 import { removePerson, updatePerson, usePeople } from "@/lib/peopleStore";
 import { New } from "./New";
@@ -52,7 +53,7 @@ export function PersonView() {
 
   const today = new Date();
   const dates = upcoming(person.occasions, today);
-  const next = dates[0];
+  const next = openOccasions(person, today)[0]; // the next one still needing a gift
   const likes = [...person.interests, ...person.style];
   const profile = { ...person, occasionTag: next?.occasion.tag };
   const safe = safePicks(allListings, profile);
@@ -131,7 +132,7 @@ export function PersonView() {
                 <span>
                   {occasion.label} <span className="text-neutral-500">· {formatDate(occasion, today)}</span>
                 </span>
-                <span className="text-neutral-600">{formatDays(days)}</span>
+                <span className="text-neutral-600">{covered(person, occasion, today) ? "✓ Gift bought" : formatDays(days)}</span>
               </li>
             ))}
             {dates.length === 0 && <li className="py-1.5 text-neutral-500">No dates yet.</li>}

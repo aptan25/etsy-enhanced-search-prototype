@@ -6,7 +6,8 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { getListing, getListings } from "@/lib/listings";
 import { safePicks } from "@/lib/match";
-import { formatDays, upcoming } from "@/lib/occasions";
+import { formatDays } from "@/lib/occasions";
+import { openOccasions } from "@/lib/reminders";
 import type { GiftRecord } from "@/lib/people";
 import { updatePerson, usePeople } from "@/lib/peopleStore";
 import { personHref } from "./PeopleStrip";
@@ -51,7 +52,7 @@ export function LookbackView() {
   }
 
   const tags = [...listing.tags.interests, ...listing.tags.style];
-  const next = upcoming(person.occasions, new Date())[0];
+  const next = openOccasions(person, new Date())[0];
 
   const save = () => {
     if (!outcome) return;
