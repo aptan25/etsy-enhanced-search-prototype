@@ -49,6 +49,11 @@ const momCheckout = (people: Person[]) => {
   return m && pick ? `/entry/checkout?item=${encodeURIComponent(pick.id)}&for=${encodeURIComponent(m.id)}` : "/entry/checkout";
 };
 const mothersDay = suggestedOccasions.mom.find((o) => o.label === "Mother's Day")!;
+/** The reminder skips ahead to 3 weeks before Mother's Day; the last step stays there. */
+const beforeMothersDay = (now: Date) => {
+  const d = nextDate(mothersDay, now);
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() - 21);
+};
 
 export const steps: Step[] = [
   {
@@ -97,15 +102,14 @@ export const steps: Step[] = [
     action: "Click “See picks for Mom”",
     target: "reminder",
     href: () => "/entry/reminder",
-    asOf: (now) => {
-      const d = nextDate(mothersDay, now);
-      return new Date(d.getFullYear(), d.getMonth(), d.getDate() - 21);
-    },
+    asOf: beforeMothersDay,
   },
   {
     path: "/made-for-them/person",
+    when: "3 weeks before Mother's Day",
     title: "Next time starts smarter",
-    action: "Christmas is marked bought, and Mother's Day is next",
+    action: "Mother's Day is next, and her gift history shows the Christmas gift she loved",
     href: momPage,
+    asOf: beforeMothersDay,
   },
 ];

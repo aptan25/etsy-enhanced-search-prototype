@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getListing, getListings } from "@/lib/listings";
 import { nearbyInterests, popularFor, safePicks, somethingNew } from "@/lib/match";
 import { formatDate, formatDays, upcoming } from "@/lib/occasions";
+import { useDemoToday } from "@/components/journey/demoClock";
 import { useAccount } from "@/lib/accountStore";
 import { covered, openOccasions } from "@/lib/reminders";
 import { relationshipLabel, type Person } from "@/lib/people";
@@ -38,6 +39,7 @@ export function PersonView() {
   const id = useSearchParams().get("id") ?? "";
   const people = usePeople();
   const account = useAccount();
+  const demoToday = useDemoToday();
   const router = useRouter();
   if (!people) return null;
 
@@ -53,7 +55,7 @@ export function PersonView() {
     );
   }
 
-  const today = new Date();
+  const today = demoToday();
   const dates = upcoming(person.occasions, today);
   const next = openOccasions(person, today)[0]; // the next one still needing a gift
   const likes = [...person.interests, ...person.style];
