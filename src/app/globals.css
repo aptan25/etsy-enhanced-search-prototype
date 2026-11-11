@@ -51,3 +51,34 @@ html[data-tour="save-feedback"] [data-tour-target="save-feedback"] {
   outline-offset: 2px;
   animation: tour-pulse 1.4s ease-in-out infinite;
 }
+
+/* Presenter views, set by the banner switch (ViewSwitch sets html[data-view]).
+   Each <New> outline gets a number so the presenter can say "see 2". */
+body {
+  counter-reset: change;
+}
+.new-tag::before {
+  counter-increment: change;
+  content: counter(change) " · ";
+}
+.today-notice {
+  display: none;
+}
+
+/* Made for Them as a buyer would see it: no presenter markings. */
+html[data-view="mft"] [data-new] {
+  outline: none;
+}
+html[data-view="mft"] .new-tag,
+html[data-view="mft"] .concept-note {
+  display: none;
+}
+
+/* Etsy today: hide every new part; a page that is new as a whole says so. */
+html[data-view="today"] [data-new],
+html[data-view="today"] .concept-note[data-whole] ~ main {
+  display: none !important;
+}
+html[data-view="today"] .today-notice {
+  display: block;
+}

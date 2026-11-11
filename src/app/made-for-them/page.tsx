@@ -16,7 +16,7 @@ export default function MadeForThemPage() {
   return (
     <>
       <Header />
-      <ConceptNote code="Core" title="Gifts page with your people" answers="save once, shop for them every occasion." />
+      <ConceptNote change="core-people" code="Core" title="Gifts page with your people" answers="save once, shop for them every occasion." />
       <main className="flex-1">
         <section className="bg-cream">
           <div className="mx-auto max-w-[1400px] px-4 py-12 text-center sm:px-8">
@@ -24,7 +24,7 @@ export default function MadeForThemPage() {
             <p className="mb-6 mt-2 text-neutral-700">Tell us who it&apos;s for and we&apos;ll find ideas.</p>
             <GiftAsk action="/made-for-them/new/chat" />
             <div className="mt-10">
-              <New label="New: your saved people">
+              <New change="core-people" label="New: your saved people">
                 <h2 className="mb-3 pt-2 text-left text-lg font-semibold sm:text-center">Your people</h2>
                 <PeopleStrip />
               </New>
@@ -33,7 +33,7 @@ export default function MadeForThemPage() {
         </section>
 
         <section id="add" className="mx-auto max-w-[1400px] scroll-mt-4 px-4 py-10 sm:px-8">
-          <New label="New: three ways to start">
+          <New change="core-start" label="New: three ways to start">
             <div className="p-2">
               <h2 className="text-lg font-semibold">Shopping for someone new?</h2>
               <p className="text-sm text-neutral-600">Three ways to start, even if you&apos;ve never bought them a gift.</p>

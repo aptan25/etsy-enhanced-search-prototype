@@ -9,12 +9,12 @@ export default function SearchPillPage() {
     <>
       <Header
         searchAddon={
-          <New inline>
+          <New change="2a-pill" inline>
             <ShoppingForPill />
           </New>
         }
       />
-      <ConceptNote code="2a" title="Search bar pill" answers="how buyers reach their people without a new page: from the search bar they already use." />
+      <ConceptNote change="2a-pill" code="2a" title="Search bar pill" answers="how buyers reach their people without a new page: from the search bar they already use." />
       <main className="flex-1">
         <HomeSections />
       </main>

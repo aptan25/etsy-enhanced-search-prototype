@@ -7,7 +7,7 @@ export default function LookbackPage() {
   return (
     <>
       <Header />
-      <ConceptNote code="3c" title="Was it a hit?" answers="suggestions improve after each gift, beyond the first interests." whole />
+      <ConceptNote change="3c-lookback" code="3c" title="Was it a hit?" answers="suggestions improve after each gift, beyond the first interests." whole />
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-8 sm:px-8">
         <Suspense>
           <LookbackView />

@@ -13,7 +13,7 @@ export default function SellerAttributesPage() {
           <span className="text-sm font-semibold text-neutral-700">Shop Manager</span>
         </div>
       </header>
-      <ConceptNote code="3b" title="Seller confirms attributes" answers="match beyond the literal interest: sellers say who it's great for." whole />
+      <ConceptNote change="3b-seller" code="3b" title="Seller confirms attributes" answers="match beyond the literal interest: sellers say who it's great for." whole />
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-8 sm:px-8">
         <SellerAttributes />
       </main>

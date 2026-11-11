@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { JourneyBar } from "@/components/journey/JourneyBar";
+import { ChangesPanel } from "@/components/mft/ChangesPanel";
+import { ViewSwitch } from "@/components/mft/ViewSwitch";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,10 +38,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           ·{" "}
           <Link href="/concepts" className="underline">
             All concepts
-          </Link>
+          </Link>{" "}
+          ·{" "}
+          <Link href="/how-it-works" className="underline">
+            How it&apos;s built
+          </Link>{" "}
+          <ViewSwitch />
         </div>
         <JourneyBar />
         {children}
+        <ChangesPanel />
       </body>
     </html>
   );

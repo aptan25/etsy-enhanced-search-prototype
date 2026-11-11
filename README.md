@@ -21,7 +21,13 @@ The listings and photos are real Etsy data. Share the link with care.
   people** on `/concepts` before presenting.
 - Starting the guided demo clears the saved people (Jess starts with none, plus
   one past order). Its steps live in `src/components/journey/steps.ts`.
-- Dashed yellow "New" outlines mark what differs from Etsy today.
+- Dashed yellow "New" outlines mark what differs from Etsy today. Click a
+  numbered tag for what changes and how it's built; the text lives in
+  `src/data/changes.ts`.
+- The black bar switches the view: **Etsy today** (new parts hidden), **Made for
+  Them** (no outlines), **Show changes** (default).
+- `/how-it-works` shows the proposed system, data flows and page status
+  (`src/data/architecture.ts`).
 - The gift chat is scripted keyword matching, not an AI model. Try the
   suggested replies, or sentences like "my coworker Maya, gift exchange Dec 18".
 - Day counts ("in 13 days") use the viewer's clock.

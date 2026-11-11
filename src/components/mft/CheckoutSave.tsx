@@ -125,7 +125,7 @@ export function CheckoutSave() {
 
         {isGift && people && (
           <div className="mt-6">
-            <New label="New: who is it for?">
+            <New change="2c-who" label="New: who is it for?">
               <div className="rounded-xl border-2 border-etsy p-4">
                 <p className="font-semibold">Who is it for?</p>
                 <p className="text-sm text-neutral-600">We&apos;ll remember this gift and remind you before their next occasion.</p>

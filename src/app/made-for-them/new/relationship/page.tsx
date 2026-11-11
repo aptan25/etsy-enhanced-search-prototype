@@ -6,7 +6,7 @@ export default function RelationshipStartPage() {
   return (
     <>
       <Header />
-      <ConceptNote code="1b" title="Start from who they are" answers="a person you've never bought for. Relationship, occasion, budget." whole />
+      <ConceptNote change="1b-relationship" code="1b" title="Start from who they are" answers="a person you've never bought for. Relationship, occasion, budget." whole />
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-8 sm:px-8">
         <h1 className="mb-6 text-2xl font-semibold">Shopping for someone new</h1>
         <RelationshipStart />

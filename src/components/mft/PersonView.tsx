@@ -158,7 +158,7 @@ export function PersonView() {
             buy={{ ...buy, tourTarget: "buy" }}
           />
           <div className="mt-10">
-            <New label="3a: beyond what you told us">
+            <New change="3a-new" label="3a: beyond what you told us">
               <div className="px-2 pb-2 [&>section]:mt-2">
                 <PickRow
                   title="Something new"

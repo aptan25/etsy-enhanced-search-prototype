@@ -122,7 +122,7 @@ export function GiftChat({ canSave }: { canSave: boolean }) {
 
       {chat.done && canSave && chat.who.relationship && (
         <div className="mt-8">
-          <New label="New: save them for next time">
+          <New change="1c-chat" label="New: save them for next time">
             <SaveCard chat={chat} relationship={chat.who.relationship} />
           </New>
         </div>
