@@ -19,8 +19,9 @@ The listings and photos are real Etsy data. Share the link with care.
 - Saved people live in each viewer's browser (no accounts, no database). Every
   viewer starts with three demo people: Mom, Maya and Dad. Press **Reset demo
   people** on `/concepts` before presenting.
-- Starting the guided demo clears the saved people (Jess starts with none, plus
-  one past order). Its steps live in `src/components/journey/steps.ts`.
+- Starting the guided demo signs out and clears the saved people: Jess is new to
+  Etsy, saves Mom from the gift chat as a guest, and creates an account after
+  checkout. Its steps live in `src/components/journey/steps.ts`.
 - Dashed yellow "New" outlines mark what differs from Etsy today. Click a
   numbered tag for what changes and how it's built; the text lives in
   `src/data/changes.ts`.

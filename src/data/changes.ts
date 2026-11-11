@@ -118,6 +118,17 @@ export const changes = {
     saves: ["Gift in the person's history", "New person (if added)", "Address link (if the buyer agrees)"],
     parts: ["profiles", "orders", "addresses", "identity"],
   },
+  "guest-account": {
+    code: "2c",
+    title: "Keep them with an account",
+    page: "/entry/checkout",
+    today: "After guest checkout, Etsy offers an account for order tracking only.",
+    change: "The order confirmation offers an account to keep the person saved at checkout and turn on reminders. Email comes from the order.",
+    answers: "How a first-time guest becomes a returning gift buyer.",
+    reads: ["Order email", "People saved under the guest id"],
+    saves: ["New account", "Guest's people moved to the account"],
+    parts: ["identity", "profiles", "notify"],
+  },
   "2d-bell": {
     code: "2d",
     title: "Reminder in the bell",

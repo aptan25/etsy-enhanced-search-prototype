@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getListing, getListings } from "@/lib/listings";
 import { nearbyInterests, popularFor, safePicks, somethingNew } from "@/lib/match";
 import { formatDate, formatDays, upcoming } from "@/lib/occasions";
+import { useAccount } from "@/lib/accountStore";
 import { covered, openOccasions } from "@/lib/reminders";
 import { relationshipLabel, type Person } from "@/lib/people";
 import { removePerson, updatePerson, usePeople } from "@/lib/peopleStore";
@@ -36,6 +37,7 @@ export const lookbackHref = (id: string, gift?: number) =>
 export function PersonView() {
   const id = useSearchParams().get("id") ?? "";
   const people = usePeople();
+  const account = useAccount();
   const router = useRouter();
   if (!people) return null;
 
@@ -81,6 +83,9 @@ export function PersonView() {
             {relationshipLabel(person.relationship)}
             {person.budget !== undefined && ` · usually under $${person.budget}`} · {sourceLabel[person.source]}
           </p>
+          {!account && (
+            <p className="mt-1 text-xs text-neutral-500">Saved in this browser only. With an account, {person.name} is on every device and you get reminders.</p>
+          )}
         </div>
         {next && (
           <p className="rounded-full bg-cream px-4 py-2 text-sm sm:ml-auto">
@@ -108,7 +113,6 @@ export function PersonView() {
             <span className="sr-only">Add something they like</span>
             <select
               value=""
-              data-tour-target="add-like"
               onChange={(e) => e.target.value && addLike(e.target.value)}
               className="rounded-lg border border-neutral-300 px-2 py-1"
             >

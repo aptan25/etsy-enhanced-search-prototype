@@ -9,6 +9,7 @@ import { formatDays, occasionPhrase } from "@/lib/occasions";
 import type { Person } from "@/lib/people";
 import { usePeople } from "@/lib/peopleStore";
 import { nextReminder } from "@/lib/reminders";
+import { useDemoToday } from "@/components/journey/demoClock";
 import { Avatar, nextOccasionText, personHref } from "./PeopleStrip";
 
 const listings = getListings();
@@ -90,8 +91,9 @@ export function OccasionStrip() {
 /** 2d: the bell in the header, with a reminder 3 weeks ahead. */
 export function ReminderBell() {
   const people = usePeople();
+  const today = useDemoToday();
   const [open, setOpen] = useState(true);
-  const next = people && nextReminder(people, new Date());
+  const next = people && nextReminder(people, today());
 
   return (
     <span className="relative">
@@ -125,8 +127,9 @@ export function ReminderBell() {
 /** 2d: the same reminder as an email. */
 export function ReminderEmail() {
   const people = usePeople();
+  const today = useDemoToday();
   if (!people) return null;
-  const next = nextReminder(people, new Date());
+  const next = nextReminder(people, today());
   if (!next) return <p className="text-sm text-neutral-600">Save someone with a date to see their reminder.</p>;
   const picks = picksFor(next.person, next.occasion.tag, 4);
 

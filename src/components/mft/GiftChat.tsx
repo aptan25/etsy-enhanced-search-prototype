@@ -10,6 +10,7 @@ import { popularFor, safePicks } from "@/lib/match";
 import { formatDate, nextDate, type Occasion } from "@/lib/occasions";
 import { newPersonId, relationshipLabel, relationships, suggestedOccasions, type Relationship } from "@/lib/people";
 import { savePerson } from "@/lib/peopleStore";
+import { useTourStep } from "@/lib/tourStore";
 import type { Listing } from "@/lib/types";
 import { New } from "./New";
 import { personHref } from "./PeopleStrip";
@@ -30,6 +31,8 @@ const ASK_TASTE = "What are they into? Hobbies, style, anything you know.";
 
 const whoReplies = ["My coworker Maya, gift exchange Dec 18", "My mom's birthday, Nov 22", "My dad for Father's Day"];
 const tasteReplies = ["Pickleball and coffee", "Gardening and pottery, rustic stuff", "Funny things, under $40"];
+/** The reply the guided demo asks the viewer to click. */
+const TOUR_REPLY = "Gardening and pottery, rustic stuff";
 
 const dedupe = (xs: string[]) => [...new Set(xs)];
 
@@ -133,7 +136,7 @@ export function GiftChat({ canSave }: { canSave: boolean }) {
           <ul className="mt-4 flex flex-wrap gap-2 text-sm">
             {replies.map((r) => (
               <li key={r}>
-                <button type="button" onClick={() => send(r)} className="rounded-full border border-neutral-300 px-3 py-1 hover:border-neutral-900">
+                <button type="button" onClick={() => send(r)} data-tour-target={r === TOUR_REPLY ? "chat" : undefined} className="rounded-full border border-neutral-300 px-3 py-1 hover:border-neutral-900">
                   {r}
                 </button>
               </li>
@@ -171,6 +174,7 @@ export function GiftChat({ canSave }: { canSave: boolean }) {
 /** "Save Maya?" Etsy pulled these from the chat; the buyer confirms with one tap. */
 function SaveCard({ chat, relationship }: { chat: Chat; relationship: Relationship }) {
   const router = useRouter();
+  const inTour = useTourStep() !== null;
   const [name, setName] = useState(chat.who.name ?? "");
   const [rel, setRel] = useState<Relationship>(relationship);
   const heard = chat.who.occasion;
@@ -257,12 +261,15 @@ function SaveCard({ chat, relationship }: { chat: Chat; relationship: Relationsh
         </fieldset>
       )}
       <div className="mt-5 flex items-center gap-4">
-        <button type="button" onClick={save} className="rounded-full bg-neutral-900 px-5 py-2 font-semibold text-white hover:bg-neutral-700">
+        <button type="button" onClick={save} data-tour-target="chat" className="rounded-full bg-neutral-900 px-5 py-2 font-semibold text-white hover:bg-neutral-700">
           Save {name || relationshipLabel(rel)}
         </button>
-        <Link href="/made-for-them" className="text-sm underline">
-          Not now
-        </Link>
+        {/* Hidden in the guided demo: skipping would leave the next steps without Mom. */}
+        {!inTour && (
+          <Link href="/made-for-them" className="text-sm underline">
+            Not now
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -41,12 +41,12 @@ html[data-tour] .concept-note {
 }
 
 .tour-pulse,
-html[data-tour="save-past-order"] [data-tour-target="save-past-order"],
-html[data-tour="reminder"] [data-tour-target="reminder"],
-html[data-tour="add-like"] [data-tour-target="add-like"],
+html[data-tour="ask-mom"] [data-tour-target="ask-mom"],
+html[data-tour="chat"] [data-tour-target="chat"],
 html[data-tour="buy"] [data-tour-target="buy"],
-html[data-tour="place-order"] [data-tour-target="place-order"],
-html[data-tour="save-feedback"] [data-tour-target="save-feedback"] {
+html[data-tour="checkout"] [data-tour-target="checkout"],
+html[data-tour="save-feedback"] [data-tour-target="save-feedback"],
+html[data-tour="reminder"] [data-tour-target="reminder"] {
   outline: 3px solid rgb(245 158 11);
   outline-offset: 2px;
   animation: tour-pulse 1.4s ease-in-out infinite;

@@ -4,7 +4,7 @@ import Link from "next/link";
 // Etsy's new gift page entry (Nov 2026): an AI search box with example prompts.
 // `action` decides where it goes: keyword search for the current state, our
 // scripted chat for Made for Them.
-const examples = ["A personalized gift for my mom", "Something funny for a coworker under $40", "A gift for a pickleball fan"];
+const examples = ["A Christmas gift for my mom", "Something funny for a coworker under $40", "A gift for a pickleball fan"];
 
 export function GiftAsk({ action, field = "q" }: { action: string; field?: string }) {
   return (
@@ -21,9 +21,10 @@ export function GiftAsk({ action, field = "q" }: { action: string; field?: strin
         </button>
       </Form>
       <ul className="mt-3 flex flex-wrap justify-center gap-2 text-sm">
-        {examples.map((e) => (
+        {examples.map((e, i) => (
           <li key={e}>
             <Link
+              data-tour-target={i === 0 ? "ask-mom" : undefined}
               href={`${action}?${field}=${encodeURIComponent(e)}`}
               className="block rounded-full border border-neutral-300 bg-white px-3 py-1 text-neutral-700 hover:border-neutral-900"
             >

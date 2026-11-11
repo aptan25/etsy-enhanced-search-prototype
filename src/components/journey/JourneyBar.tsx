@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useAccount } from "@/lib/accountStore";
 import { usePeople } from "@/lib/peopleStore";
 import { endTour, setTourStep, useTourStep } from "@/lib/tourStore";
 import { persona, steps } from "./steps";
@@ -11,6 +12,7 @@ import { persona, steps } from "./steps";
 export function JourneyBar() {
   const step = useTourStep();
   const people = usePeople();
+  const account = useAccount();
   const pathname = usePathname();
   const router = useRouter();
   const current = step === null ? undefined : steps[step];
@@ -44,11 +46,11 @@ export function JourneyBar() {
 
   const go = (to: number) => {
     setTourStep(to);
-    router.push(steps[to].href(people));
+    router.push(steps[to].href(people, account));
   };
   const last = step === steps.length - 1;
   // Steps with an action lock Next until it's done, so later steps have Mom to show.
-  const locked = current.done ? !current.done(people) : false;
+  const locked = current.done ? !current.done(people, account) : false;
 
   return (
     <aside aria-label="Guided demo" className="sticky top-0 z-40 border-b-2 border-amber-400 bg-amber-50 text-neutral-900 shadow-sm">
@@ -66,7 +68,7 @@ export function JourneyBar() {
           <p className="text-sm">
             <span className="font-semibold">{current.title}.</span> <span className="text-neutral-700">👉 {current.action}</span>
             {pathname !== current.path && (
-              <Link href={current.href(people)} className="ml-2 font-semibold underline">
+              <Link href={current.href(people, account)} className="ml-2 font-semibold underline">
                 Go back to this step
               </Link>
             )}

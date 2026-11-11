@@ -4,18 +4,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { persona } from "@/components/journey/steps";
 import { formatPrice } from "@/components/ListingCard";
+import { accountFromEmail, signIn, useAccount } from "@/lib/accountStore";
 import { getListing } from "@/lib/listings";
 import { occasionPhrase, type Occasion } from "@/lib/occasions";
 import { giftYear, openOccasions } from "@/lib/reminders";
 import { newPersonId, relationshipLabel, relationships, suggestedOccasions, type Person, type Relationship } from "@/lib/people";
 import { savePerson, updatePerson, usePeople } from "@/lib/peopleStore";
+import { useTourStep } from "@/lib/tourStore";
 import { New } from "./New";
 import { personHref } from "./PeopleStrip";
 import { lookbackHref } from "./PersonView";
 
 const ITEM_ID = "4349989364"; // personalized pickleball tote, $36.40
 const NEW = "__new__";
+/** "Christmas" stays as is; "birthday" becomes "the birthday". */
+const theOccasion = (label: string) => {
+  const phrase = occasionPhrase(label);
+  return /^[A-Z]/.test(phrase) ? phrase : `the ${phrase}`;
+};
 const occasionChoices = ["Birthday", "Holiday gift exchange", "Christmas", "Mother's Day", "Father's Day", "Just because"];
 
 /** The person's soonest occasion still needing a gift that checkout offers, e.g. "Christmas". */
@@ -40,6 +48,8 @@ export function CheckoutSave() {
   const occasion = occasionPicked ?? (forPerson && nextOffered(forPerson)) ?? occasionChoices[0];
   const [date, setDate] = useState("");
   const [savedId, setSavedId] = useState<string | null>(null);
+  // The occasion as ordered: the default above moves on once this gift covers it.
+  const [orderedFor, setOrderedFor] = useState(occasionChoices[0]);
 
   if (!item) throw new Error(`Checkout demo listing ${ITEM_ID} is missing from src/data/listings.ts`);
 
@@ -48,6 +58,7 @@ export function CheckoutSave() {
       setSavedId("");
       return;
     }
+    setOrderedFor(occasion);
     const today = new Date();
     const record = (occasions: Occasion[]) => ({ listingId: item.id, occasion, year: giftYear(occasions, occasion, today) });
     if (who !== NEW) {
@@ -83,8 +94,9 @@ export function CheckoutSave() {
         <p className="text-lg font-semibold">Order placed (demo: nothing was charged).</p>
         {saved ? (
           <>
+            <CreateAccount person={saved} />
             <p className="mt-2">
-              Saved to <strong>{saved.name}</strong>&apos;s profile. After the {occasionPhrase(occasion)}, we&apos;ll ask how it went, then
+              Saved to <strong>{saved.name}</strong>&apos;s profile. After {theOccasion(orderedFor)}, we&apos;ll ask how it went, then
               remind you before their next occasion.
             </p>
             <div className="mt-4 flex justify-center gap-4 text-sm">
@@ -201,11 +213,86 @@ export function CheckoutSave() {
           <span>Total</span>
           <span>{formatPrice(item.price)}</span>
         </p>
-        <button type="button" onClick={placeOrder} data-tour-target="place-order" className="mt-5 w-full rounded-full bg-neutral-900 py-3 font-semibold text-white hover:bg-neutral-700">
+        <button type="button" onClick={placeOrder} data-tour-target="checkout" className="mt-5 w-full rounded-full bg-neutral-900 py-3 font-semibold text-white hover:bg-neutral-700">
           Place order (demo)
         </button>
         <p className="mt-2 text-center text-xs text-neutral-500">Prototype only. No payment is taken.</p>
       </aside>
+    </div>
+  );
+}
+
+/**
+ * Guests: the order saved the person in this browser. An account keeps them on
+ * every device and turns on reminders (guests get none). Demo only: nothing is
+ * sent, and no password is asked for.
+ */
+function CreateAccount({ person }: { person: Person }) {
+  const account = useAccount();
+  const inTour = useTourStep() !== null;
+  const [email, setEmail] = useState(inTour ? persona.email : "");
+  const [error, setError] = useState("");
+  const [skipped, setSkipped] = useState(false);
+  // Rendered only after an order is placed in the browser, so reading the clock is safe.
+  const next = openOccasions(person, new Date())[0];
+  const remind = next ? `before ${occasionPhrase(next.occasion.label)}` : "before their next occasion";
+
+  if (account) {
+    return (
+      <p className="mt-3 rounded-xl bg-white p-3 text-sm">
+        Signed in as <strong>{account.email}</strong>. We&apos;ll remind you {remind}.
+      </p>
+    );
+  }
+  if (skipped) return <p className="mt-3 text-sm">{person.name} is saved in this browser only. No reminders without an account.</p>;
+
+  const create = () => {
+    try {
+      signIn(accountFromEmail(email));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Couldn't create the account");
+    }
+  };
+
+  return (
+    <div className="mt-4 rounded-xl border-2 border-etsy bg-white p-4 text-left">
+      <New change="guest-account" label="New: keep them with an account">
+        <div className="p-1">
+          <p className="font-semibold">
+            Keep {person.name} and get a reminder {remind}
+          </p>
+          <p className="text-sm text-neutral-600">Create an account with the email from this order. Demo: nothing is sent.</p>
+          <form
+            className="mt-3 flex flex-wrap gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              create();
+            }}
+          >
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError("");
+              }}
+              aria-label="Email"
+              placeholder="you@example.com"
+              className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-3 py-2"
+            />
+            <button type="submit" data-tour-target="checkout" className="rounded-full bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700">
+              Create account
+            </button>
+          </form>
+          {error && <p className="mt-1 text-sm text-red-700">{error}</p>}
+          {/* Hidden in the guided demo: skipping would leave the reminder step with no account. */}
+          {!inTour && (
+            <button type="button" onClick={() => setSkipped(true)} className="mt-2 text-sm underline">
+              Not now
+            </button>
+          )}
+        </div>
+      </New>
     </div>
   );
 }

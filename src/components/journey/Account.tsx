@@ -1,9 +1,9 @@
 "use client";
 
-import { useTourStep } from "@/lib/tourStore";
-import { persona } from "./steps";
+import { useAccount } from "@/lib/accountStore";
 
-/** "Sign in" normally; the demo buyer's name while the guided demo runs. */
+/** "Sign in" for a guest; the buyer's name once they have made an account. */
 export function Account() {
-  return useTourStep() === null ? <span>Sign in</span> : <span className="font-semibold">Hi, {persona.name}</span>;
+  const account = useAccount();
+  return account ? <span className="font-semibold">Hi, {account.name}</span> : <span>Sign in</span>;
 }
