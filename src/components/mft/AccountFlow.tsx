@@ -25,13 +25,18 @@ export function AccountFlow() {
   const inTour = useTourStep() !== null;
   const mode: Mode = params.get("mode") === "signin" ? "signin" : "register";
   const next = safeNext(params.get("next"));
-  const [email, setEmail] = useState(inTour ? persona.email : "");
-  const [firstName, setFirstName] = useState(inTour ? persona.name : "");
-  const [password, setPassword] = useState(inTour ? "demo-password" : "");
+  // null until the viewer types: the demo's values show even when the tour is
+  // only known after the page hydrates (a refresh mid-demo).
+  const [typedEmail, setEmail] = useState<string | null>(null);
+  const [typedName, setFirstName] = useState<string | null>(null);
+  const [typedPassword, setPassword] = useState<string | null>(null);
+  const email = typedEmail ?? (inTour ? persona.email : "");
+  const firstName = typedName ?? (inTour ? persona.name : "");
+  const password = typedPassword ?? (inTour ? "demo-password" : "");
   const [error, setError] = useState("");
 
   // Typing again clears the last error.
-  const edit = (set: (v: string) => void) => (v: string) => {
+  const edit = (set: (v: string | null) => void) => (v: string) => {
     set(v);
     setError("");
   };
@@ -49,7 +54,7 @@ export function AccountFlow() {
     }
     try {
       signIn(accountFromEmail(email, mode === "register" ? firstName : ""));
-      setPassword("");
+      setPassword(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Couldn't sign in");
     }
