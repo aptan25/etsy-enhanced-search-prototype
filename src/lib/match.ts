@@ -115,12 +115,13 @@ export function somethingNew(listings: Listing[], p: Profile, n = 5): Listing[] 
 export function popularFor(
   listings: Listing[],
   r: Relationship,
-  opts: { occasionTag?: string; budget?: number } = {},
+  opts: { occasionTag?: string; budget?: number; history?: { listingId: string }[] } = {},
   n = 10,
 ): Listing[] {
   const hitsOccasion = (l: Listing) => (opts.occasionTag && l.tags.occasion.includes(opts.occasionTag) ? 1 : 0);
+  const given = (l: Listing) => opts.history?.some((h) => h.listingId === l.id) ?? false;
   return listings
-    .filter((l) => fitsRecipient(l, r) && (opts.budget === undefined || l.price <= opts.budget))
+    .filter((l) => fitsRecipient(l, r) && (opts.budget === undefined || l.price <= opts.budget) && !given(l))
     .sort((a, b) => hitsOccasion(b) - hitsOccasion(a) || b.reviewCount - a.reviewCount)
     .slice(0, n);
 }

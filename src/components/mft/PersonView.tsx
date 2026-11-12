@@ -151,7 +151,7 @@ export function PersonView() {
         <PickRow
           title={`Popular for a ${relationshipLabel(person.relationship).toLowerCase()}`}
           subtitle="Add a few likes and these get more personal."
-          listings={popularFor(allListings, person.relationship, { occasionTag: next?.occasion.tag, budget: person.budget }, 5)}
+          listings={popularFor(allListings, person.relationship, { occasionTag: next?.occasion.tag, budget: person.budget, history: person.history }, 5)}
           buy={buy}
         />
       ) : (

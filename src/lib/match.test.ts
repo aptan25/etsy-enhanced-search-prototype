@@ -60,6 +60,12 @@ describe("match", () => {
     expect(picks[0].tags.occasion).toContain("holiday");
   });
 
+  it("never suggests a popular pick they were already given", () => {
+    const top = popularFor(listings, "mom", {}, 1)[0];
+    const picks = popularFor(listings, "mom", { history: [{ listingId: top.id }] });
+    expect(picks.map((l) => l.id)).not.toContain(top.id);
+  });
+
   it("an empty profile gets no safe picks (the page falls back to popular picks)", () => {
     expect(safePicks(listings, { relationship: "friend", interests: [], style: [] })).toEqual([]);
   });
