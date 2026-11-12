@@ -7,9 +7,10 @@ import { ListingCard } from "@/components/ListingCard";
 import { parseBudget, parseTaste, parseWho, type ParsedWho } from "@/lib/intent";
 import { getListings } from "@/lib/listings";
 import { popularFor, safePicks } from "@/lib/match";
-import { formatDate, nextDate, type Occasion } from "@/lib/occasions";
-import { newPersonId, relationshipLabel, relationships, suggestedOccasions, type Relationship } from "@/lib/people";
-import { savePerson } from "@/lib/peopleStore";
+import { formatDate, formatDays, nextDate, occasionPhrase, type Occasion } from "@/lib/occasions";
+import { newPersonId, relationshipLabel, relationships, suggestedOccasions, type Person, type Relationship } from "@/lib/people";
+import { savePerson, usePeople } from "@/lib/peopleStore";
+import { openOccasions } from "@/lib/reminders";
 import { useTourStep } from "@/lib/tourStore";
 import type { Listing } from "@/lib/types";
 import { New } from "./New";
@@ -29,10 +30,10 @@ type Chat = {
 const ASK_WHO = "Who are you shopping for, and what's the occasion?";
 const ASK_TASTE = "What are they into? Hobbies, style, anything you know.";
 
-const whoReplies = ["My coworker Maya, gift exchange Dec 18", "My mom's birthday, Nov 22", "My dad for Father's Day"];
+const whoReplies = ["My coworker Maya, gift exchange Dec 18", "A Christmas gift for my mom", "My dad for Father's Day"];
 const tasteReplies = ["Pickleball and coffee", "Gardening and pottery, rustic stuff", "Funny things, under $40"];
-/** The reply the guided demo asks the viewer to click. */
-const TOUR_REPLY = "Gardening and pottery, rustic stuff";
+/** The replies the guided demo asks the viewer to click. */
+const TOUR_REPLIES = ["A Christmas gift for my mom", "Gardening and pottery, rustic stuff"];
 
 const dedupe = (xs: string[]) => [...new Set(xs)];
 
@@ -79,6 +80,23 @@ function reply(chat: Chat, text: string): Chat {
   return next;
 }
 
+/** A chat opened for a saved person: Etsy already knows them, so it starts at the picks. */
+function startFor(person: Person, today: Date): Chat {
+  const next = openOccasions(person, today)[0];
+  const listings = getListings();
+  const picks = safePicks(listings, { ...person, occasionTag: next?.occasion.tag }, 4);
+  const likes = [...person.interests, ...person.style].join(", ");
+  const when = next ? ` ${person.name}'s ${occasionPhrase(next.occasion.label)} is ${formatDays(next.days)}.` : "";
+  return {
+    who: { relationship: person.relationship, name: person.name },
+    interests: person.interests,
+    style: person.style,
+    budget: person.budget,
+    messages: [{ from: "bot", text: `Shopping for ${person.name}.${when} Here are ideas based on what they like${likes ? ` (${likes})` : ""}.`, picks }],
+    done: true,
+  };
+}
+
 function start(initial: string | null): Chat {
   const chat: Chat = { who: {}, interests: [], style: [], messages: [{ from: "bot", text: `Hi! ${ASK_WHO}` }], done: false };
   return initial ? reply(chat, initial) : chat;
@@ -91,7 +109,20 @@ function start(initial: string | null): Chat {
  */
 export function GiftChat({ canSave }: { canSave: boolean }) {
   const params = useSearchParams();
-  const [chat, setChat] = useState(() => start(params.get("q")));
+  const people = usePeople();
+  const forId = params.get("for");
+  if (forId && canSave) {
+    if (!people) return null;
+    const person = people.find((p) => p.id === forId);
+    // Clock read only after people load in the browser, never during the prerender.
+    if (person) return <ChatBody key={person.id} canSave={false} initial={() => startFor(person, new Date())} person={person} />;
+  }
+  return <ChatBody canSave={canSave} initial={() => start(params.get("q"))} />;
+}
+
+/** `person`: the chat was opened for someone already saved, so it links to them instead of offering to save. */
+function ChatBody({ canSave, initial, person }: { canSave: boolean; initial: () => Chat; person?: Person }) {
+  const [chat, setChat] = useState(initial);
   const [draft, setDraft] = useState("");
   const replies = chat.who.relationship ? tasteReplies : whoReplies;
 
@@ -123,6 +154,12 @@ export function GiftChat({ canSave }: { canSave: boolean }) {
         ))}
       </ol>
 
+      {person && (
+        <Link href={personHref(person.id)} className="mt-6 inline-block font-semibold underline">
+          See everything for {person.name} →
+        </Link>
+      )}
+
       {chat.done && canSave && chat.who.relationship && (
         <div className="mt-8">
           <New change="1c-chat" label="New: save them for next time">
@@ -136,7 +173,7 @@ export function GiftChat({ canSave }: { canSave: boolean }) {
           <ul className="mt-4 flex flex-wrap gap-2 text-sm">
             {replies.map((r) => (
               <li key={r}>
-                <button type="button" onClick={() => send(r)} data-tour-target={r === TOUR_REPLY ? "chat" : undefined} className="rounded-full border border-neutral-300 px-3 py-1 hover:border-neutral-900">
+                <button type="button" onClick={() => send(r)} data-tour-target={TOUR_REPLIES.includes(r) ? "chat" : undefined} className="rounded-full border border-neutral-300 px-3 py-1 hover:border-neutral-900">
                   {r}
                 </button>
               </li>
@@ -163,7 +200,7 @@ export function GiftChat({ canSave }: { canSave: boolean }) {
         </>
       )}
       {chat.done && (
-        <button type="button" onClick={() => setChat(start(null))} className="mt-6 text-sm underline">
+        <button type="button" onClick={() => setChat(start(null))} className="mt-6 block text-sm underline">
           Start over
         </button>
       )}

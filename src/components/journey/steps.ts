@@ -58,17 +58,17 @@ const beforeMothersDay = (now: Date) => {
 export const steps: Step[] = [
   {
     path: "/made-for-them",
-    title: "Etsy's gifts page. You're not signed in",
-    action: "Click “A Christmas gift for my mom”",
-    target: "ask-mom",
+    title: "Etsy's gifts hub. You're not signed in",
+    action: "Click “Start a chat”",
+    target: "start-chat",
     href: () => "/made-for-them",
   },
   {
     path: "/made-for-them/new/chat",
-    title: "The gift chat asks what she likes",
-    action: "Click “Gardening and pottery, rustic stuff”, then “Save Mom”",
+    title: "The gift chat asks who it's for and what she likes",
+    action: "Click “A Christmas gift for my mom”, then “Gardening and pottery, rustic stuff”, then “Save Mom”",
     target: "chat",
-    href: () => `/made-for-them/new/chat?q=${encodeURIComponent("A Christmas gift for my mom")}`,
+    href: () => "/made-for-them/new/chat",
     done: (people) => Boolean(mom(people)),
   },
   {

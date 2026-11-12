@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { ConceptNote } from "@/components/mft/ConceptNote";
-import { GiftAsk } from "@/components/mft/GiftAsk";
+import { GiftHub } from "@/components/mft/GiftHub";
+import { ShoppingForChat } from "@/components/mft/ShoppingForChat";
 import { PeopleStrip } from "@/components/mft/PeopleStrip";
 import { New } from "@/components/mft/New";
 
@@ -11,28 +12,21 @@ const starts = [
   { href: "/made-for-them/new/chat", title: "Tell us in a chat", body: "Describe them in your own words. We'll keep the dates." },
 ];
 
-// Made for Them: Etsy's new gift page, plus the people you shop for under the box.
+// Made for Them: Etsy's gifts hub with a "Shopping for" dropdown on the chat card,
+// plus the people you shop for under the guides.
 export default function MadeForThemPage() {
   return (
     <>
       <Header />
       <ConceptNote change="core-people" code="Core" title="Gifts page with your people" answers="save once, shop for them every occasion." />
-      <main className="flex-1">
-        <section className="bg-cream">
-          <div className="mx-auto max-w-[1400px] px-4 py-12 text-center sm:px-8">
-            <h1 className="font-serif text-3xl sm:text-4xl">Find the perfect gift</h1>
-            <p className="mb-6 mt-2 text-neutral-700">Tell us who it&apos;s for and we&apos;ll find ideas.</p>
-            <GiftAsk action="/made-for-them/new/chat" />
-            <div className="mt-10">
-              <New change="core-people" label="New: your saved people">
-                <h2 className="mb-3 pt-2 text-left text-lg font-semibold sm:text-center">Your people</h2>
-                <PeopleStrip />
-              </New>
-            </div>
-          </div>
+      <GiftHub chat={<ShoppingForChat />}>
+        <section className="mt-10">
+          <New change="core-people" label="New: your saved people">
+            <h2 className="mb-3 pt-2 text-lg font-semibold">Your people</h2>
+            <PeopleStrip />
+          </New>
         </section>
-
-        <section id="add" className="mx-auto max-w-[1400px] scroll-mt-4 px-4 py-10 sm:px-8">
+        <section id="add" className="mt-10 scroll-mt-4">
           <New change="core-start" label="New: three ways to start">
             <div className="p-2">
               <h2 className="text-lg font-semibold">Shopping for someone new?</h2>
@@ -50,7 +44,7 @@ export default function MadeForThemPage() {
             </div>
           </New>
         </section>
-      </main>
+      </GiftHub>
     </>
   );
 }

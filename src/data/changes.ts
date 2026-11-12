@@ -19,12 +19,23 @@ export type Change = {
 };
 
 export const changes = {
+  "core-for": {
+    code: "Core",
+    title: "Shopping for dropdown",
+    page: "/made-for-them",
+    today: "“Need gift ideas? Start a chat” opens the Gifting Assistant, which starts from zero every time.",
+    change: "A “Shopping for” dropdown of saved people next to Start a chat. Picking Mom opens the chat already knowing her likes and next occasion.",
+    answers: "How buyers reach their people without changing the homepage.",
+    reads: ["Recipient profiles", "Next open occasion"],
+    saves: [],
+    parts: ["profiles", "chat", "matching", "occasions"],
+  },
   "core-people": {
     code: "Core",
-    title: "Your people on the gifts page",
+    title: "Your people on the gifts hub",
     page: "/made-for-them",
-    today: "Gift guides and a “Start a chat” button. Nothing about who you shop for.",
-    change: "Saved people under the chat box, soonest occasion first.",
+    today: "Gift guides and a “Start a chat” card. Nothing about who you shop for.",
+    change: "Saved people under the gift guides, soonest occasion first.",
     answers: "Save once, shop for them every occasion.",
     reads: ["Recipient profiles", "Next occasion per person"],
     saves: [],

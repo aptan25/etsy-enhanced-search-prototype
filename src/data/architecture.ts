@@ -115,7 +115,7 @@ export const flows: { name: string; trigger: string; data: string; savedTo: stri
 export const pages: { name: string; status: "Built" | "Partly" | "New"; href?: string; note: string }[] = [
   { name: "Homepage", status: "Built", href: "/entry/home-strip", note: "Next-occasion strip, past-order prompt" },
   { name: "Search results", status: "Built", href: "/entry/search-pill", note: "“Shopping for someone?” pill" },
-  { name: "Gifts page + chat", status: "Built", href: "/made-for-them", note: "Your people, Save Mom? in the chat" },
+  { name: "Gifts hub + chat", status: "Built", href: "/made-for-them", note: "“Shopping for” dropdown, your people, Save Mom? in the chat" },
   { name: "Item page", status: "Partly", href: "/listing/1619780681", note: "Missing: fit for a person, arrival to their ZIP" },
   { name: "Checkout", status: "Partly", href: "/entry/checkout", note: "Missing: recipient address, arrival vs the occasion" },
   { name: "Order confirmation", status: "New", note: "Save + create-account prompt for guests" },
