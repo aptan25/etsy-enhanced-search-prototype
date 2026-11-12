@@ -17,7 +17,7 @@ const pick = (id: string) => {
 };
 
 const guides = [
-  { title: "Top 100 Holiday Gifts", q: "christmas", id: "4515441955" },
+  { title: "Top 100 Holiday Gifts", q: "holiday", id: "4515441955" },
   { title: "Gifts for Her", q: "her", id: "1413455244" },
   { title: "Gifts for Him", q: "him", id: "4310655951" },
   { title: "Home Gifts", q: "home", id: "4318207115" },

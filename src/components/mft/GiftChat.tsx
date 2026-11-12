@@ -84,7 +84,10 @@ function reply(chat: Chat, text: string): Chat {
 function startFor(person: Person, today: Date): Chat {
   const next = openOccasions(person, today)[0];
   const listings = getListings();
-  const picks = safePicks(listings, { ...person, occasionTag: next?.occasion.tag }, 4);
+  const profile = { ...person, occasionTag: next?.occasion.tag };
+  // No likes saved yet (e.g. a quiz answered with "Neither"): fall back to what people like them get.
+  const safe = safePicks(listings, profile, 4);
+  const picks = safe.length ? safe : popularFor(listings, person.relationship, profile).slice(0, 4);
   const likes = [...person.interests, ...person.style].join(", ");
   const when = next ? ` ${person.name}'s ${occasionPhrase(next.occasion.label)} is ${formatDays(next.days)}.` : "";
   return {
@@ -92,7 +95,13 @@ function startFor(person: Person, today: Date): Chat {
     interests: person.interests,
     style: person.style,
     budget: person.budget,
-    messages: [{ from: "bot", text: `Shopping for ${person.name}.${when} Here are ideas based on what they like${likes ? ` (${likes})` : ""}.`, picks }],
+    messages: [
+      {
+        from: "bot",
+        text: `Shopping for ${person.name}.${when} ${safe.length ? `Here are ideas based on what they like (${likes}).` : `Here's what people often get a ${relationshipLabel(person.relationship).toLowerCase()}. Tell me what they're into to narrow it down.`}`,
+        picks,
+      },
+    ],
     done: true,
   };
 }
