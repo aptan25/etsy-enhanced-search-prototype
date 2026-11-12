@@ -119,7 +119,7 @@ export const pages: { name: string; status: "Built" | "Partly" | "New"; href?: s
   { name: "Item page", status: "Partly", href: "/listing/1619780681", note: "Missing: fit for a person, arrival to their ZIP" },
   { name: "Checkout", status: "Partly", href: "/entry/checkout", note: "Missing: recipient address, arrival vs the occasion" },
   { name: "Order confirmation", status: "New", note: "Save + create-account prompt for guests" },
-  { name: "Sign in / create account", status: "New", note: "Carries the guest's people over" },
+  { name: "Sign in / create account", status: "Built", href: "/account", note: "Carries the guest's people over" },
   { name: "Your people", status: "Partly", href: "/made-for-them", note: "Strip only, no full page" },
   { name: "Person page", status: "Built", href: "/made-for-them/person?id=mom", note: "Likes, dates, gifts, picks" },
   { name: "Add a person", status: "Built", href: "/made-for-them#add", note: "Quiz, relationship, chat" },

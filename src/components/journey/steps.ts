@@ -84,7 +84,15 @@ export const steps: Step[] = [
     action: "Click “Place order”, then “Create account”",
     target: "checkout",
     href: momCheckout,
-    done: (people, account) => (mom(people)?.history.length ?? 0) > 0 && account !== null,
+    done: (people) => (mom(people)?.history.length ?? 0) > 0,
+  },
+  {
+    path: "/account",
+    title: "Create your own Etsy account. Mom comes with you",
+    action: "Click “Register” (the form is filled in for you)",
+    target: "account",
+    href: (people) => `/account?mode=register&next=${encodeURIComponent(momPage(people))}`,
+    done: (_people, account) => account !== null,
   },
   {
     path: "/made-for-them/lookback",

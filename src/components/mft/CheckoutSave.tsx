@@ -4,9 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { persona } from "@/components/journey/steps";
 import { formatPrice } from "@/components/ListingCard";
-import { accountFromEmail, signIn, useAccount } from "@/lib/accountStore";
+import { useAccount } from "@/lib/accountStore";
 import { getListing } from "@/lib/listings";
 import { occasionPhrase, type Occasion } from "@/lib/occasions";
 import { giftYear, openOccasions } from "@/lib/reminders";
@@ -223,15 +222,13 @@ export function CheckoutSave() {
 }
 
 /**
- * Guests: the order saved the person in this browser. An account keeps them on
- * every device and turns on reminders (guests get none). Demo only: nothing is
- * sent, and no password is asked for.
+ * Guests: the order saved the person in this browser only. Signing in or
+ * registering (on /account) keeps them on every device and turns on reminders;
+ * guests get none.
  */
 function CreateAccount({ person }: { person: Person }) {
   const account = useAccount();
   const inTour = useTourStep() !== null;
-  const [email, setEmail] = useState(inTour ? persona.email : "");
-  const [error, setError] = useState("");
   const [skipped, setSkipped] = useState(false);
   // Rendered only after an order is placed in the browser, so reading the clock is safe.
   const next = openOccasions(person, new Date())[0];
@@ -246,51 +243,34 @@ function CreateAccount({ person }: { person: Person }) {
   }
   if (skipped) return <p className="mt-3 text-sm">{person.name} is saved in this browser only. No reminders without an account.</p>;
 
-  const create = () => {
-    try {
-      signIn(accountFromEmail(email));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Couldn't create the account");
-    }
-  };
-
+  const back = encodeURIComponent(personHref(person.id));
   return (
     <div className="mt-4 rounded-xl border-2 border-etsy bg-white p-4 text-left">
-      <New change="guest-account" label="New: keep them with an account">
+      <New change="guest-account" label="New: save them to your account">
         <div className="p-1">
-          <p className="font-semibold">
-            Keep {person.name} and get a reminder {remind}
+          <p className="font-semibold">Save {person.name} to your Etsy account</p>
+          <p className="text-sm text-neutral-600">
+            You checked out as a guest, so {person.name} is only saved in this browser. Sign in or create your account to keep them on every
+            device and get a reminder {remind}.
           </p>
-          <p className="text-sm text-neutral-600">Create an account with the email from this order. Demo: nothing is sent.</p>
-          <form
-            className="mt-3 flex flex-wrap gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              create();
-            }}
-          >
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError("");
-              }}
-              aria-label="Email"
-              placeholder="you@example.com"
-              className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-3 py-2"
-            />
-            <button type="submit" data-tour-target="checkout" className="rounded-full bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700">
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <Link
+              href={`/account?mode=register&next=${back}`}
+              data-tour-target="checkout"
+              className="rounded-full bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700"
+            >
               Create account
-            </button>
-          </form>
-          {error && <p className="mt-1 text-sm text-red-700">{error}</p>}
-          {/* Hidden in the guided demo: skipping would leave the reminder step with no account. */}
-          {!inTour && (
-            <button type="button" onClick={() => setSkipped(true)} className="mt-2 text-sm underline">
-              Not now
-            </button>
-          )}
+            </Link>
+            <Link href={`/account?mode=signin&next=${back}`} className="rounded-full border border-neutral-900 px-4 py-2 text-sm font-semibold">
+              Sign in
+            </Link>
+            {/* Hidden in the guided demo: skipping would leave the reminder step with no account. */}
+            {!inTour && (
+              <button type="button" onClick={() => setSkipped(true)} className="text-sm underline">
+                Not now
+              </button>
+            )}
+          </div>
         </div>
       </New>
     </div>

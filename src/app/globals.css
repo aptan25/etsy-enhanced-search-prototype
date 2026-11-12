@@ -45,6 +45,7 @@ html[data-tour="ask-mom"] [data-tour-target="ask-mom"],
 html[data-tour="chat"] [data-tour-target="chat"],
 html[data-tour="buy"] [data-tour-target="buy"],
 html[data-tour="checkout"] [data-tour-target="checkout"],
+html[data-tour="account"] [data-tour-target="account"],
 html[data-tour="save-feedback"] [data-tour-target="save-feedback"],
 html[data-tour="reminder"] [data-tour-target="reminder"] {
   outline: 3px solid rgb(245 158 11);

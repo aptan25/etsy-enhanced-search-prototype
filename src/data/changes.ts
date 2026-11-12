@@ -120,10 +120,10 @@ export const changes = {
   },
   "guest-account": {
     code: "2c",
-    title: "Keep them with an account",
+    title: "Save them to your account",
     page: "/entry/checkout",
-    today: "After guest checkout, Etsy offers an account for order tracking only.",
-    change: "The order confirmation offers an account to keep the person saved at checkout and turn on reminders. Email comes from the order.",
+    today: "After guest checkout, nothing about who the gift was for is kept.",
+    change: "The order confirmation asks the buyer to sign in or register so the person they saved as a guest stays saved and gets reminders. After signing in, those people show up in the account.",
     answers: "How a first-time guest becomes a returning gift buyer.",
     reads: ["Order email", "People saved under the guest id"],
     saves: ["New account", "Guest's people moved to the account"],

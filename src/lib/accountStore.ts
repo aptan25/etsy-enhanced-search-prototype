@@ -56,12 +56,22 @@ export function useAccount(): Account | null {
   return useSyncExternalStore(subscribe, read, () => null);
 }
 
-/** "jess.t@example.com" → Jess. Throws on something that isn't an email. */
-export function accountFromEmail(email: string): Account {
+/**
+ * The account to store: the first name given, else one taken from the email
+ * ("jess.t@example.com" → Jess). Throws on something that isn't an email.
+ * Passwords are never passed in or stored.
+ */
+export function accountFromEmail(email: string, firstName = ""): Account {
   const clean = email.trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) throw new Error("Enter an email address");
-  const first = clean.split("@")[0].split(/[._+-]/)[0];
-  return { name: first.charAt(0).toUpperCase() + first.slice(1), email: clean };
+  const fromEmail = clean.split("@")[0].split(/[._+-]/)[0];
+  const name = firstName.trim() || fromEmail.charAt(0).toUpperCase() + fromEmail.slice(1);
+  return { name, email: clean };
+}
+
+/** Where to go after signing in: only a path on this site, never another host. */
+export function safeNext(raw: string | null): string | null {
+  return raw && raw.startsWith("/") && !raw.startsWith("//") && !raw.startsWith("/\\") ? raw : null;
 }
 
 export const signIn = (account: Account) => write(JSON.stringify(account));
